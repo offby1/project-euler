@@ -1,41 +1,43 @@
 #lang scheme
 
-;; given, say, (11 7 5 3 2), return (13 11 7 5 3 2)
-(define (next-prime so-far)
-  (let next-candidate ((candidate (add1 (first so-far))))
+(require mzlib/trace)
+
+;; These are in descending order, even though it's hard to tell just
+;; by looking :)
+(define *known-primes* (list 2))
+
+(define (next-prime-internal!)
+  (let next-candidate ((candidate (add1 (first *known-primes*))))
     (define is-prime?
-      (let loop ((so-far so-far))
+      (let loop ((smaller-primes *known-primes*))
         (cond
-         ((null? so-far)
+         ((null? smaller-primes)
           #t)
-         ((zero? (remainder candidate (first so-far)))
+         ((zero? (remainder candidate (first smaller-primes)))
           #f)
          (else
-          (loop (rest so-far))))))
-    (if is-prime? (cons candidate so-far)
+          (loop (rest smaller-primes))))))
+    (if is-prime? (set! *known-primes* (cons candidate *known-primes*))
         (next-candidate (add1 candidate)))))
 
-(define (in-primes-not-exceeding *max*)
-  (make-do-sequence
-   (lambda ()
-     (values first
-             next-prime
-             '(2)
-             (lambda (current)
-               (< (first current) *max*))
-             (lambda (v) #t)
-             (lambda (t v) #t)))))
-
-(define (primes< n)
-  (for/list ((p (in-primes-not-exceeding n)))
-    p))
+(define (next-prime-after! p)
+  (if (< p (first *known-primes*))
+      (first *known-primes*)
+      (begin
+        (next-prime-internal!)
+        (next-prime-after! p))))
+(trace next-prime-after!)
 
 (define (prime-factors num)
-  (for/fold ([num num]
-             [factors '()])
-      ((p (in-primes-not-exceeding num)))
-    (let-values (((q r) (quotient/remainder num p)))
-      (if (zero? r)
-          (values q (cons p factors))
-          (values num factors)))))
+  (let loop ([num num]
+             [factors '()]
+             [largest-untested-prime 2])
+    (if (= 1 num)
+        factors
+        (let-values (((q r) (quotient/remainder num largest-untested-prime)))
+          (if (zero? r)
+              (loop q (cons largest-untested-prime factors) largest-untested-prime)
+              (loop num factors (next-prime-after! largest-untested-prime)))))))
 
+(for ((n (in-list '(11 10))))
+  (printf "Factors of ~a: ~a~%" n (prime-factors n)))
