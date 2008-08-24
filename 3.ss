@@ -1,6 +1,7 @@
 #lang scheme
 
-(require mzlib/trace)
+(require mzlib/trace
+         (lib "1.ss" "srfi"))
 
 ;; These are in descending order, even though it's hard to tell just
 ;; by looking :)
@@ -17,20 +18,20 @@
           #f)
          (else
           (loop (rest smaller-primes))))))
-    (if is-prime? (set! *known-primes* (cons candidate *known-primes*))
+    (if is-prime?
+        (set! *known-primes* (cons candidate *known-primes*))
         (next-candidate (add1 candidate)))))
 
 (define (next-prime-after! p)
-  (if (< p (first *known-primes*))
-      (first *known-primes*)
+  (or (find (lambda (known) (< p known))
+            (reverse *known-primes*))
       (begin
         (next-prime-internal!)
         (next-prime-after! p))))
-(trace next-prime-after!)
 
 (define (largest-prime-factor-of num)
   (let loop ([num num]
-             [prime 2]
+             [prime (last *known-primes*)]
              [largest-prime-factor 1])
     (if (= 1 num)
         (max num largest-prime-factor)
