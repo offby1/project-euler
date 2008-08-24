@@ -28,16 +28,18 @@
         (next-prime-after! p))))
 (trace next-prime-after!)
 
-(define (prime-factors num)
+(define (largest-prime-factor-of num)
   (let loop ([num num]
-             [factors '()]
-             [largest-untested-prime 2])
+             [prime 2]
+             [largest-prime-factor 1])
     (if (= 1 num)
-        factors
-        (let-values (((q r) (quotient/remainder num largest-untested-prime)))
+        (max num largest-prime-factor)
+        (let-values (((q r) (quotient/remainder num prime)))
           (if (zero? r)
-              (loop q (cons largest-untested-prime factors) largest-untested-prime)
-              (loop num factors (next-prime-after! largest-untested-prime)))))))
-
-(for ((n (in-list '(11 10))))
-  (printf "Factors of ~a: ~a~%" n (prime-factors n)))
+              (loop q
+                    prime
+                    prime)
+              (loop
+               num
+               (next-prime-after! prime)
+               largest-prime-factor))))))
