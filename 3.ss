@@ -17,10 +17,8 @@
           n))))
 
 (define (largest-prime-factor n)
-  (let ([p (first-number-which-divides n)])
-    (if p
-        (let ((reduced (reduce-by n p)))
-          (if (= 1 reduced)
-              p
-              (largest-prime-factor reduced)))
-        n)))
+  (let* ([p (first-number-which-divides n)]
+         [reduced (reduce-by n p)])
+    (if (= 1 reduced)
+        p
+        (largest-prime-factor reduced))))
