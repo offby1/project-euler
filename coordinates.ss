@@ -9,4 +9,4 @@
   (apply append (map row (build-list n values))))
 
 (provide/contract
- [coordinates (-> natural-number/c (listof natural-number/c))])
+ [coordinates (-> natural-number/c (listof (list/c number? number?)))])
