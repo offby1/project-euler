@@ -1,6 +1,7 @@
 #lang scheme
 
-(require (lib "25.ss" "srfi"))
+(require (lib "25.ss" "srfi")
+         "coordinates.ss")
 
 (define *grid*
   (array (shape 0 20 0 20)
@@ -47,26 +48,6 @@
   (define south     (something 0 1))
   (define southwest (something -1 1))
   (list east southeast south southwest))
-
-(define (in-array-coordinates array)
-  (make-do-sequence
-   (lambda ()
-     (values (lambda (seq)
-               (values (first seq)
-                       (second seq)))
-             (lambda (seq)
-               (match seq
-                 [(list x y)
-                  (if (< x (sub1 (array-end *grid* 0)))
-                      (list (add1 x) y)
-                      (list 0 (add1 y)))]))
-             '(0 0)
-             (lambda (seq)
-               (and
-                (< (first seq) (array-end *grid* 0))
-                (< (second seq) (array-end *grid* 1))))
-             (lambda (x y) #t)
-             (lambda (t x y) #t)))))
 
 (length
  (for/list ([(a b) (in-array-coordinates *grid*)])
