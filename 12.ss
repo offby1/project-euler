@@ -8,9 +8,9 @@
                 (match seq [(list prime exponent) exponent]))
               (factorize n))))
 
-(define *first-501-integers* (map add1 (build-list 501 values)))
+(define *first-501-factors* (map (compose add1 add1) (build-list 501 values)))
 
-(define x (apply * *first-501-integers*))
+(define x (apply * *first-501-factors*))
 
 (define (big-sqrt n)
   (let loop ([too-small 1]
