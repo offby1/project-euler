@@ -47,8 +47,29 @@
   (define southeast (something 1 1))
   (define south     (something 0 1))
   (define southwest (something -1 1))
-  (list east southeast south southwest))
+  (filter (lambda (seq)
+            (= 4 (length seq)))
+          (list east southeast south southwest)))
 
-(length
- (for/list ([(a b) (in-array-coordinates *grid*)])
-   (list a b)))
+(define *quadruplets*
+  (for/fold ([accum '()])
+    ([(a b) (in-array-coordinates *grid*)])
+    (let ([bar (below-and-right a b)])
+      (if (null? bar)
+          accum
+          (append
+           accum
+           (map
+            (lambda (line-of-four)
+              (map
+               (lambda (x-and-y) (apply array-ref *grid* x-and-y))
+               line-of-four))
+            bar))))))
+
+(for/fold ([max-product 0]
+           [winner #f])
+  ([quad (in-list *quadruplets*)])
+  (let ((prod (apply * quad)))
+    (if (< max-product prod)
+        (values prod quad)
+        (values max-product winner))))
