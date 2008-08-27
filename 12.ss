@@ -9,9 +9,9 @@
   (/ (sub1 (sqrt (add1 (* 8 x)))) 2))
 
 (define *guesses*
-  (map (lambda (num-factors)
+  (map (lambda (num-divisors)
          (triangle (ceiling
-             (un-triangle (factorial num-factors)))))
+             (un-triangle (factorial num-divisors)))))
        (list 499 500 501)))
 
 (define all-exponents
@@ -33,17 +33,17 @@
       '()
     (foobar (car lists) (apply multiply (cdr lists)))))
 
-(define (all-factors-of n)
+(define (all-divisors-of n)
   (delete-duplicates
    (sort
     (map (lambda (nums)
            (apply * nums)) (apply multiply (map all-exponents (factorize n))))
     <)))
 
-(define (smallest-number-with-this-many-factors nf)
+(define (smallest-number-with-this-many-divisors nf)
   (let loop ([candidate 1])
-    (let ((num-factors (length (all-factors-of candidate))))
-      (if (<= nf num-factors)
+    (let ((num-divisors (length (all-divisors-of candidate))))
+      (if (<= nf num-divisors)
           candidate
           (loop (add1 candidate))))))
 
@@ -51,15 +51,15 @@
 
 #;
 (let loop ((n 2)
-           (maximum-num-factors-seen 0)
+           (maximum-num-divisors-seen 0)
            (record-breakers '()))
-  (let* ((factors  (all-factors-of n))
-         (nf (length factors)))
-    (if (= maximum-num-factors-seen 502)
+  (let* ((divisors  (all-divisors-of n))
+         (nf (length divisors)))
+    (if (= maximum-num-divisors-seen 502)
         (reverse record-breakers)
-        (if (< maximum-num-factors-seen nf)
-            (let ((message (format "~a factors of ~a~a"
-                                   (length factors)
+        (if (< maximum-num-divisors-seen nf)
+            (let ((message (format "~a divisors of ~a~a"
+                                   (length divisors)
                                    n
                                    (if (triangle? n)
                                        " (it's triangular!!)"
@@ -69,11 +69,11 @@
                     nf
                     (cons message record-breakers)))
             (loop (add1 n)
-                  maximum-num-factors-seen
+                  maximum-num-divisors-seen
                   record-breakers)))))
 
-(define (count-factors n)
-  (length (all-factors-of n)))
+(define (count-divisors n)
+  (length (all-divisors-of n)))
 
 ;; stolen from
 ;; http://github.com/GreatZebu/project-euler/tree/master/euler.py.  It
@@ -82,17 +82,17 @@
 (let/ec return
   (let ((target 501))
     (let loop ((n target))
-      (let ((last_factors (count-factors (sub1 n))))
-        (let ((factors (count-factors n)))
-          (when (<= target (- (* factors last_factors)
-                              (max factors last_factors)))
+      (let ((last_divisors (count-divisors (sub1 n))))
+        (let ((divisors (count-divisors n)))
+          (when (<= target (- (* divisors last_divisors)
+                              (max divisors last_divisors)))
             (printf "Trying ~a * ~a / 2~%" (sub1 n) n)
             (let ((triangle (/ (* n (sub1 n)) 2)))
-              (let ((f (count-factors triangle)))
+              (let ((f (count-divisors triangle)))
                 (when (<= f target)
-                  (printf "only ~a factors, continuing...~%" f)
+                  (printf "only ~a divisors, continuing...~%" f)
                   (loop (add1 n))))
-              (printf "The first triangular number with at least ~a factors is ~a~%"
+              (printf "The first triangular number with at least ~a divisors is ~a~%"
                       target triangle)
               (printf "~a~%" n)
               (return triangle)))
