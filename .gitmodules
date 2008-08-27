@@ -1,0 +1,3 @@
+[submodule "GreatZebu"]
+	path = GreatZebu
+	url = git://github.com/GreatZebu/project-euler.git
