@@ -48,3 +48,25 @@
           (loop (add1 candidate))))))
 
 ;; Just plug 501 into the above and wait!!
+
+(let loop ((n 2)
+           (maximum-num-factors-seen 0)
+           (record-breakers '()))
+  (let* ((factors  (all-factors-of n))
+         (nf (length factors)))
+    (if (= maximum-num-factors-seen 502)
+        (reverse record-breakers)
+        (if (< maximum-num-factors-seen nf)
+            (let ((message (format "~a factors of ~a~a"
+                                   (length factors)
+                                   n
+                                   (if (triangle? n)
+                                       " (it's triangular!!)"
+                                       ""))))
+              (display message) (newline)
+              (loop (add1 n)
+                    nf
+                    (cons message record-breakers)))
+            (loop (add1 n)
+                  maximum-num-factors-seen
+                  record-breakers)))))
