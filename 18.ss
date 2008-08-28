@@ -29,9 +29,14 @@
   (lookup
    (make-coords
     (add1 (coords-row c))
-    (coords-col c))
+    (coords-col c))))
+
+(define (right-child c)
+  (lookup
    (make-coords
     (add1 (coords-row c))
     (add1 (coords-col c)))))
 
-(check-equal? (lookup #s(coords 3 2)) 87)
+(check-equal? (lookup      #s(coords 3 2)) 87)
+(check-equal? (left-child  #s(coords 3 2)) 82)
+(check-equal? (right-child #s(coords 3 2)) 47)
