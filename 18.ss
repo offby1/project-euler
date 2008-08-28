@@ -1,4 +1,6 @@
 #lang scheme
+(require (planet schematics/schemeunit:3))
+
 (define *the-triangle*
   #(
     #(75)
@@ -17,3 +19,19 @@
     #(63 66 04 68 89 53 67 30 73 16 69 87 40 31)
     #(04 62 98 27 23 09 70 98 73 93 38 53 60 04 23)
     ))
+
+(define-struct coords (row col) #:prefab)
+
+(define (lookup c)
+  (vector-ref (vector-ref *the-triangle* (coords-row c)) (coords-col c)))
+
+(define (left-child c)
+  (lookup
+   (make-coords
+    (add1 (coords-row c))
+    (coords-col c))
+   (make-coords
+    (add1 (coords-row c))
+    (add1 (coords-col c)))))
+
+(check-equal? (lookup #s(coords 3 2)) 87)
