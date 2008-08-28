@@ -1,8 +1,5 @@
 #lang scheme
 
-(require (planet "aif.ss" ("schematics" "macro.plt"))
-         mzlib/trace)
-
 (define (next n)
   (if (even? n)
       (/ n 2)
