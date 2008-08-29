@@ -39,6 +39,13 @@
     (add1 (coords-row c))
     (add1 (coords-col c)))))
 
+(define (cell-value c)
+  (if (number? c)
+      c
+      (car c)))
+
+
+
 (let ((c (make-coords 3 2)))
   (check-equal? (lookup      c) 87)
   (check-equal? (left-child  c) 82)
@@ -51,3 +58,19 @@
   (check-equal? (right-child c) 47)
 
   (replace! c 87))
+
+
+(for ([row (in-range (- (vector-length *the-triangle*) 2)
+                      -1
+                      -1)])
+  (for ([column (in-range 0 (add1 row))])
+    (let ([c (make-coords row column)])
+      (replace! c (if (< (cell-value (right-child c))
+                         (cell-value (left-child c)))
+                      (cons (+
+                             (cell-value (lookup c))
+                             (cell-value (left-child c))) #\/)
+                      (cons (+
+                             (cell-value (lookup c))
+                             (cell-value (right-child c))) #\\))))))
+*the-triangle*
