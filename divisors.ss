@@ -34,5 +34,11 @@
            (apply * nums)) (apply multiply (map all-exponents (factorize n))))
     <)))
 (check-equal? (all-divisors-of 10) '(1 2 5 10))
+
+(define (all-divisors-smaller-than n)
+  (drop-right (all-divisors-of n) 1))
+(check-equal? (all-divisors-smaller-than 10) '(1 2 5))
+
 (provide/contract
- [all-divisors-of (-> natural-number/c (listof natural-number/c))])
+ [all-divisors-of           (-> natural-number/c (listof natural-number/c))]
+ [all-divisors-smaller-than (-> natural-number/c (listof natural-number/c))])
