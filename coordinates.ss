@@ -20,19 +20,18 @@
      (values (lambda (seq)
                (values (first seq)
                        (second seq)))
-             (lambda (seq)
-               (match seq
-                 [(list x y)
-                  (cond
-                   ((< 1 (- x y))
-                    (list (sub1 x)
-                          (add1 y)))
-                   ((= 1 (- x y))
-                    (list (add1 (+ x y))
-                          0))
-                   (else
-                    (list (add1 (* 2 x))
-                          0)))]))
+             (match-lambda
+              [(list x y)
+               (cond
+                ((< 1 (- x y))
+                 (list (sub1 x)
+                       (add1 y)))
+                ((= 1 (- x y))
+                 (list (add1 (+ x y))
+                       0))
+                (else
+                 (list (add1 (* 2 x))
+                       0)))])
              '(0 0)
              (lambda (seq)
                (< (first seq) *max*))
