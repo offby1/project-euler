@@ -19,5 +19,8 @@
 (check-equal? (categorize 11) 'd)
 (check-equal? (categorize  6) 'p)
 
+;; a list of abundant numbers
+(filter (lambda (n) (eq? 'a (categorize n))) (build-list 20 (compose add1 add1)))
+
 (provide/contract
  [categorize (-> natural-number/c (cut member <> '(d p a)))])

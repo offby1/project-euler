@@ -1,6 +1,7 @@
 #lang scheme
 
-(require (lib "25.ss" "srfi"))
+(require (lib "25.ss" "srfi")
+         (planet schematics/schemeunit:3))
 
 (define (row n)
   (map (lambda (i)
@@ -37,6 +38,12 @@
                (< (first seq) *max*))
              (lambda (x y) #t)
              (lambda (t x y) #t)))))
+
+(check-equal?
+ (for/list ([(i j)  (in-coordinates-diagonally 3)])
+   (list i j))
+ '((0 0) (1 0) (2 0) (1 1))
+ )
 
 (define (in-array-coordinates array)
   (make-do-sequence
