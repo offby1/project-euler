@@ -7,7 +7,7 @@
          (planet schematics/schemeunit:3)
          (planet "memoize.ss" ("dherman" "memoize.plt" )))
 
-(define/memo (categorize n)
+(define (categorize n)
   (let ((sum (apply + (all-divisors-smaller-than n))))
     (cond
      ((< n sum)
