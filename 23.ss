@@ -23,12 +23,16 @@
 (check-equal? (categorize  6) 'p)
 
 (define/memo (nth-abundant-number n)
-  (if (= n 1)
-      12
-      (let loop ((candidate (add1 (nth-abundant-number (sub1 n)))))
-        (if (eq? 'a (categorize candidate))
-            candidate
-            (loop (add1 candidate))))))
+  (cond
+   ((<= n 1)
+    (error "Bozo!  I want integers > 0." n))
+   ((= n 1)
+    12)
+   (else
+    (let loop ((candidate (add1 (nth-abundant-number (sub1 n)))))
+      (if (eq? 'a (categorize candidate))
+          candidate
+          (loop (add1 candidate)))))))
 
 (define (keys ht)
   (hash-map ht (lambda (k v) k)))
@@ -40,18 +44,23 @@
 
       (let ((this-sum (+ (nth-abundant-number (add1 i))
                          (nth-abundant-number (add1 j)))))
-        (when (< 28123 this-sum)
+        (when (<
+               50
+               ;;28123
+               this-sum)
           (printf "No point going on!~n")
           (return sums-of-abundant-pairs))
         (hash-set sums-of-abundant-pairs this-sum #t)))))
 
 (check-equal? (apply min (keys *sums-of-pairs-of-abundant-numbers*)) 24)
 
-(for/fold ([sum-of-not-sums 0])
+(for/fold ([not-sums '()]
+           [sum-of-not-sums 0])
     ([candidate (in-range (apply max (keys *sums-of-pairs-of-abundant-numbers*)))])
   (if (hash-ref *sums-of-pairs-of-abundant-numbers* candidate #f)
-      sum-of-not-sums
-      (+ candidate sum-of-not-sums)))
+      (values not-sums sum-of-not-sums)
+      (values (cons candidate not-sums)
+              (+ candidate sum-of-not-sums))))
 
 (provide/contract
  [categorize (-> natural-number/c (cut member <> '(d p a)))])
