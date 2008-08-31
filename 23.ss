@@ -22,9 +22,6 @@
 (check-equal? (categorize 11) 'd)
 (check-equal? (categorize  6) 'p)
 
-;; a list of abundant numbers
-(filter (lambda (n) (eq? 'a (categorize n))) (build-list 20 (compose add1 add1)))
-
 (define/memo (nth-abundant-number n)
   (if (= n 1)
       12
@@ -32,6 +29,9 @@
         (if (eq? 'a (categorize candidate))
             candidate
             (loop (add1 candidate))))))
+
+(define (keys ht)
+  (hash-map ht (lambda (k v) k)))
 
 (define *sums-of-pairs-of-abundant-numbers*
   (let/ec return
@@ -45,8 +45,10 @@
           (return sums-of-abundant-pairs))
         (hash-set sums-of-abundant-pairs this-sum #t)))))
 
+(check-equal? (apply min (keys *sums-of-pairs-of-abundant-numbers*)) 24)
+
 (for/fold ([sum-of-not-sums 0])
-    ([candidate (in-range (apply max (hash-map *sums-of-pairs-of-abundant-numbers* (lambda (k v) k))))])
+    ([candidate (in-range (apply max (keys *sums-of-pairs-of-abundant-numbers*)))])
   (if (hash-ref *sums-of-pairs-of-abundant-numbers* candidate #f)
       sum-of-not-sums
       (+ candidate sum-of-not-sums)))
