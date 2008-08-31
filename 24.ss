@@ -19,7 +19,8 @@
 ;;      return s;
 ;;  }
 
-(require (planet "math.ss" ("soegaard" "math.plt")))
+(require (planet "math.ss" ("soegaard" "math.plt"))
+         (planet schematics/schemeunit:3))
 
 (define (permutation k S)
   (let ((n (vector-length S)))
@@ -31,15 +32,10 @@
         S
         (let loop ((j 1)
                    (factorial (factorial (sub1 n))))
-          (printf "loop: j is ~a; factorial is ~a~%" j factorial)
           (when (< j n)
             (let ((tempj (remainder (quotient k factorial) (+ n 1 (- j)))))
-              (printf "loop: tempj is ~a ... " tempj )
               (let ((temps (s (+ j tempj))))
-                (printf "temps is ~a~%" temps)
-
                 (let rotate ((i (+ j tempj)))
-                  (printf "rotate: i is ~a~%" i)
                   (when (<= (add1 j) i)
                     (s! i (s (sub1 i)))
                     (rotate (sub1 i))))
@@ -48,3 +44,12 @@
                 (loop (add1 j)
                       (quotient factorial (- n j))))))
           S))))
+
+(check-equal?
+ (map (lambda (n) (permutation n (build-vector 3 values))) (build-list 6 values))
+ '(#(0 1 2) #(0 2 1) #(1 0 2) #(1 2 0) #(2 0 1) #(2 1 0)))
+
+(list->string
+   (map (lambda (digit)
+          (integer->char (+ digit (char->integer #\0))))
+        (vector->list (permutation (sub1 1000000) (build-vector 10 values)))))
