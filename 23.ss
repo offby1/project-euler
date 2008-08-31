@@ -33,18 +33,23 @@
             candidate
             (loop (add1 candidate))))))
 
-(define *not-quite-the-answer*
-  (time
-   (let/ec return
-     (for/fold ([sums-of-abundant-pairs (make-immutable-hash '())])
-         ([(i j) (in-coordinates-diagonally 1400)])
+(define *sums-of-pairs-of-abundant-numbers*
+  (let/ec return
+    (for/fold ([sums-of-abundant-pairs (make-immutable-hash '())])
+        ([(i j) (in-coordinates-diagonally 10000)])
 
-       (let ((this-sum (+ (nth-abundant-number (add1 i))
-                          (nth-abundant-number (add1 j)))))
-         (when (< 28123 this-sum)
-           (printf "No point going on!~n")
-           (return sums-of-abundant-pairs))
-         (hash-set sums-of-abundant-pairs this-sum #t))))))
-(hash-count *not-quite-the-answer*)
+      (let ((this-sum (+ (nth-abundant-number (add1 i))
+                         (nth-abundant-number (add1 j)))))
+        (when (< 28123 this-sum)
+          (printf "No point going on!~n")
+          (return sums-of-abundant-pairs))
+        (hash-set sums-of-abundant-pairs this-sum #t)))))
+
+(for/fold ([sum-of-not-sums 0])
+    ([candidate (in-range (apply max (hash-map *sums-of-pairs-of-abundant-numbers* (lambda (k v) k))))])
+  (if (hash-ref *sums-of-pairs-of-abundant-numbers* candidate #f)
+      sum-of-not-sums
+      (+ candidate sum-of-not-sums)))
+
 (provide/contract
  [categorize (-> natural-number/c (cut member <> '(d p a)))])
