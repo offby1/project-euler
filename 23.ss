@@ -1,6 +1,8 @@
 #lang scheme
 
 (require (lib "26.ss" "srfi")
+         (lib "1.ss" "srfi")
+         "coordinates.ss"
          "divisors.ss"
          (planet schematics/schemeunit:3)
          (planet "memoize.ss" ("dherman" "memoize.plt" )))
@@ -31,5 +33,18 @@
             candidate
             (loop (add1 candidate))))))
 
+(define *not-quite-the-answer*
+  (time
+   (let/ec return
+     (for/fold ([sums-of-abundant-pairs (make-immutable-hash '())])
+         ([(i j) (in-coordinates-diagonally 1400)])
+
+       (let ((this-sum (+ (nth-abundant-number (add1 i))
+                          (nth-abundant-number (add1 j)))))
+         (when (< 28123 this-sum)
+           (printf "No point going on!~n")
+           (return sums-of-abundant-pairs))
+         (hash-set sums-of-abundant-pairs this-sum #t))))))
+(hash-count *not-quite-the-answer*)
 (provide/contract
  [categorize (-> natural-number/c (cut member <> '(d p a)))])
