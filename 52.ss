@@ -6,9 +6,11 @@
          (except-in (lib "1.ss" "srfi") first second)
          (lib "26.ss" "srfi"))
 
-(define (same-digits? n m)
-  (equal? (sort (digits n) <)
-          (sort (digits m) <)))
+(define (same-digits? . numbers)
+  (define (same-digits-2? n m)
+    (equal? (sort (digits n) <)
+            (sort (digits m) <)))
+  (andmap (cut same-digits-2? <> (car numbers)) (cdr numbers)))
 
 (check-true  (same-digits? 12 21))
 (check-false (same-digits? 12 22))
@@ -16,12 +18,9 @@
 
 (define (winner? x)
   (and (same-digits? (* 2 x)
-                     (* 3 x))
-       (same-digits? (* 3 x)
-                     (* 4 x))
-       (same-digits? (* 4 x)
-                     (* 5 x))
-       (same-digits? (* 5 x)
+                     (* 3 x)
+                     (* 4 x)
+                     (* 5 x)
                      (* 6 x))))
 
 (let loop ([candidate 1])
