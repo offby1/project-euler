@@ -6,12 +6,20 @@
          (except-in (lib "1.ss" "srfi") first second)
          (lib "26.ss" "srfi"))
 
-(define (sum-of-fifth-powers n)
-  (apply + (map (cut expt <> 5) (digits n))))
+(define (sum-of-nth-powers n k)
+  (apply + (map (cut expt <> n) (digits k))))
 
-(let loop ([n 0])
-  (when (< n 10000000)
-   (let ((s (sum-of-fifth-powers n)))
-     (when (= n s)
-       (printf "~a => ~a~%" n s)))
-   (loop (add1 n))))
+(define (all-sums n)
+  (let loop ([k 2]
+             [magic '()])
+    (if (< k 1000000)
+        (let ((s (sum-of-nth-powers n k)))
+          (loop (add1 k)
+                (if (= s k)
+                    (cons k magic)
+                    magic)))
+        (reverse magic))))
+
+(check-equal? (all-sums 4) '(1634 8208 9474))
+
+(all-sums 5)
