@@ -17,11 +17,9 @@
 (check-false (same-digits? 10 1))
 
 (define (winner? x)
-  (and (same-digits? (* 2 x)
-                     (* 3 x)
-                     (* 4 x)
-                     (* 5 x)
-                     (* 6 x))))
+  (apply
+   same-digits?
+   (map (cut * <> x)(build-list 5 (compose add1 add1)))))
 
 (let loop ([candidate 1])
   (if (winner? candidate)
