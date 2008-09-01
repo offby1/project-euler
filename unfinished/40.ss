@@ -18,13 +18,11 @@
     (lambda ()
       (channel-get the-channel))))
 
-(define x (digit-generator))
-(x)
-(x)
-(x)
-(x)
-
 (define (nth-digit n)
-  (for/fold ([result 0])
-      ([i (in-range n)])
-    (x)))
+  (let ((x! (digit-generator)))
+    (for/fold ([result 0])
+        ([i (in-range n)])
+      (x!))))
+(check-equal? (nth-digit 12) 1)
+
+(apply * (map nth-digit '(1  10  100  1000  10000  100000  1000000)))
