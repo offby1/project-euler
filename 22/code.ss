@@ -14,7 +14,7 @@
 (check-equal? (name->sum "COLIN") 53)
 
 (for/fold ([sum 0])
-          ([(name index) (in-indexed (read-words-from "names.txt"))])
+          ([(name index) (in-indexed (sort (read-words-from "names.txt") string<?))])
   (+ sum
      (* (add1 index)
         (name->sum name))))

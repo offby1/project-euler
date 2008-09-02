@@ -7,4 +7,18 @@
          (lib "26.ss" "srfi")
          (file "../read-words.ss"))
 
-(read-words-from "words.txt")
+(define (letter->number l)
+  (add1
+   (- (char->integer l)
+      (char->integer #\a))))
+
+(define (word-value w)
+  (apply + (map (compose letter->number char-downcase) (filter char-alphabetic? (string->list w)))))
+
+(check-equal? (word-value "SKY") 55)
+
+(length
+ (filter
+  (lambda (w)
+    (triangle? (word-value w)))
+  (read-words-from "words.txt")))
