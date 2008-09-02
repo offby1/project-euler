@@ -6,16 +6,16 @@
          (except-in (lib "1.ss" "srfi") first second)
          (lib "26.ss" "srfi"))
 
-(define *triple-play* 40755)
+(define *triple-play* 285)
 
 (define (winner? n)
-  (and (triangle?   n)
-       (pentagonal? n)
-       (hexagonal?  n)))
+  (let ((t (triangle n)))
+    (and (pentagonal? t)
+         (hexagonal?  t))))
 
 (check-true (winner? *triple-play*))
 
 (let loop ([n (add1 *triple-play*)])
   (if (winner? n)
-      n
+      (triangle n)
       (loop (add1 n))))
