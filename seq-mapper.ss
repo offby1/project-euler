@@ -1,13 +1,11 @@
 #lang scheme
 
 (require "coordinates.ss"
-         (planet schematics/schemeunit:3)
-         mzlib/trace)
+         (planet schematics/schemeunit:3))
 
 (define (transformed-sequence orig-sequence value-transformer)
   (define-values (more? next!) (sequence-generate orig-sequence))
 
-  (trace value-transformer)
   ;; our state is (cons (list value1 value2 ...) orig-sequence)
   (make-do-sequence
    (lambda ()
@@ -16,8 +14,6 @@
       ;; state->value(s)
       (match-lambda
        [(cons current-values original-sequence)
-        (printf "current-values: ~s; original-sequence: ~s~%"
-                current-values original-sequence)
         (apply values (value-transformer current-values))])
 
       ;; current state->next-state
