@@ -17,26 +17,38 @@
 (define (in-coordinates-diagonally *max*)
   (make-do-sequence
    (lambda ()
-     (values (lambda (seq)
-               (values (first seq)
-                       (second seq)))
-             (match-lambda
-              [(list x y)
-               (cond
-                ((< 1 (- x y))
-                 (list (sub1 x)
-                       (add1 y)))
-                ((= 1 (- x y))
-                 (list (add1 (+ x y))
-                       0))
-                (else
-                 (list (add1 (* 2 x))
-                       0)))])
-             '(0 0)
-             (lambda (seq)
-               (< (first seq) *max*))
-             (lambda (x y) #t)
-             (lambda (t x y) #t)))))
+     (values
+      ;; pos->element(s)
+      (lambda (seq)
+        (values (first seq)
+                (second seq)))
+
+      ;; next-pos
+      (match-lambda
+       [(list x y)
+        (cond
+         ((< 1 (- x y))
+          (list (sub1 x)
+                (add1 y)))
+         ((= 1 (- x y))
+          (list (add1 (+ x y))
+                0))
+         (else
+          (list (add1 (* 2 x))
+                0)))])
+
+      ;; initial position
+      '(0 0)
+
+      ;; not-last?  pos->bool
+      (lambda (seq)
+        (< (first seq) *max*))
+
+      ;; not-last?  element(s)->bool
+      (lambda (x y) #t)
+
+      ;; not-last? (-> pos elt ... bool)
+      (lambda (t x y) #t)))))
 
 (check-equal?
  (for/list ([(i j)  (in-coordinates-diagonally 3)])
