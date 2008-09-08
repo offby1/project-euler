@@ -22,3 +22,5 @@
     (if (= 1 reduced)
         p
         (largest-prime-factor reduced))))
+
+(largest-prime-factor 600851475143)
