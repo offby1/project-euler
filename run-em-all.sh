@@ -8,6 +8,6 @@ find *                                          \
     -wholename '*[0-9]*/code.ss'                \
     | sort -n | while read s
     do
-        echo -n "$s: " 
+        echo -n $(date) ": $s: " 
         mzscheme $s
     done

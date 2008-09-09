@@ -23,4 +23,4 @@
               (loop (cons datum stuff))))))))
 
 (provide/contract
- [read-words-from (-> string? (listof string?))])
+ [read-words-from (-> (or/c string? path?) (listof string?))])

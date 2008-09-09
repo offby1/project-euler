@@ -73,4 +73,4 @@
                       (cons (+
                              (cell-value (lookup c))
                              (cell-value (right-child c))) #\\))))))
-*the-triangle*
+(car (vector-ref (vector-ref *the-triangle* 0) 0))

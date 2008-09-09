@@ -2,8 +2,8 @@
 
 (require (lib "26.ss" "srfi")
          (lib "1.ss" "srfi")
-         "../coordinates.ss"
-         "../divisors.ss"
+         "coordinates.ss"
+         "divisors.ss"
          (planet schematics/schemeunit:3)
          (planet "memoize.ss" ("dherman" "memoize.plt" )))
 

@@ -5,7 +5,8 @@
          (planet "memoize.ss" ("dherman" "memoize.plt" ))
          (except-in (lib "1.ss" "srfi") first second)
          (lib "26.ss" "srfi")
-         (file "../read-words.ss"))
+         (file "../read-words.ss")
+         mzlib/etc)
 
 (define (letter->number l)
   (add1
@@ -21,4 +22,7 @@
  (filter
   (lambda (w)
     (triangle? (word-value w)))
-  (read-words-from "words.txt")))
+  (read-words-from
+   (build-path
+    (this-expression-source-directory)
+    "words.txt"))))

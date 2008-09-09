@@ -2,7 +2,8 @@
 
 (require (lib "26.ss" "srfi")
          (planet schematics/schemeunit:3)
-         (file "../read-words.ss"))
+         (file "../read-words.ss")
+         mzlib/etc)
 
 (define (string->numbers s)
   (define base (sub1 (char->integer #\A)))
@@ -14,7 +15,10 @@
 (check-equal? (name->sum "COLIN") 53)
 
 (for/fold ([sum 0])
-          ([(name index) (in-indexed (sort (read-words-from "names.txt") string<?))])
+          ([(name index) (in-indexed (sort (read-words-from
+                                            (build-path
+                                             (this-expression-source-directory)
+                                             "names.txt")) string<?))])
   (+ sum
      (* (add1 index)
         (name->sum name))))
