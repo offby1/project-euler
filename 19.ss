@@ -1,6 +1,6 @@
 #lang scheme
 
-(require (lib "19.ss" "srfi"))
+(require srfi/19)
 
 (let loop ([first-of-the-month-sundays 0]
            [today (date->time-utc

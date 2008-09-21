@@ -1,6 +1,6 @@
 #lang scheme
 
-(require (lib "26.ss" "srfi")
+(require srfi/26
          (planet schematics/schemeunit:3)
          (file "../read-words.ss")
          mzlib/etc)

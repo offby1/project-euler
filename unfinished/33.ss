@@ -1,7 +1,7 @@
 #lang scheme
 
-(require (lib "26.ss" "srfi")
-         (except-in (lib "1.ss" "srfi") first second)
+(require srfi/26
+         (except-in srfi/1 first second)
          "../coordinates.ss"
          (planet "math.ss" ("soegaard" "math.plt"))
          (planet schematics/schemeunit:3)

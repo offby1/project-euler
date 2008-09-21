@@ -1,6 +1,6 @@
 #lang scheme
 (require (planet "math.ss" ("soegaard" "math.plt"))
-         (except-in (lib "1.ss" "srfi") first second)
+         (except-in srfi/1 first second)
          (planet schematics/schemeunit:3))
 
 (define all-exponents

@@ -1,6 +1,6 @@
 #lang scheme
 
-(require (lib "25.ss" "srfi")
+(require srfi/25
          (planet schematics/schemeunit:3))
 
 (define (row n)

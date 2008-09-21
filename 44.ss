@@ -1,6 +1,7 @@
 #lang scheme
 
-(require (planet "memoize.ss" ("dherman" "memoize.plt" )))
+(require (planet "memoize.ss" ("dherman" "memoize.plt" ))
+         "coordinates.ss")
 
 (define (pentagonal n)
   (* n (/ (sub1 (* 3 n)) 2)))
@@ -18,14 +19,15 @@
          (and (is-pentagonal? diff)
               diff))))
 
+;; Apparently this uses up all available RAM
 (when #f
   (sort
    (foldl (lambda (elt accum)
             (let ((happiness (apply happy-pair? elt)))
-              (if happiness
-                  (cons `(,(map (lambda (n)
-                                  `(n ,n pent(n) ,(pentagonal n)))  elt) diff ,happiness) accum)
-                  accum)))
+            (if happiness
+                (cons `(,(map (lambda (n)
+                                `(n ,n pent(n) ,(pentagonal n)))  elt) diff ,happiness) accum)
+                accum)))
           '()
           (coordinates 10000))
    <

@@ -1,7 +1,7 @@
 #lang scheme
 
-(require (lib "26.ss" "srfi")
-         (lib "1.ss" "srfi")
+(require srfi/26
+         srfi/1
          "coordinates.ss"
          "divisors.ss"
          (planet schematics/schemeunit:3)
