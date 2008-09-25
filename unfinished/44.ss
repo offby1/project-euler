@@ -19,7 +19,6 @@
          (and (is-pentagonal? diff)
               diff))))
 
-;; Apparently this uses up all available RAM
 (sort
  (for/fold ([accum '()])
      ([(x y) (in-coordinates-diagonally 10000)])
