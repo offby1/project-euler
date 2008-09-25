@@ -20,15 +20,14 @@
               diff))))
 
 ;; Apparently this uses up all available RAM
-(when #f
-  (sort
-   (foldl (lambda (elt accum)
-            (let ((happiness (apply happy-pair? elt)))
-            (if happiness
-                (cons `(,(map (lambda (n)
-                                `(n ,n pent(n) ,(pentagonal n)))  elt) diff ,happiness) accum)
-                accum)))
-          '()
-          (coordinates 10000))
-   <
-   #:key last))
+(sort
+ (for/fold ([accum '()])
+     ([(x y) (in-coordinates-diagonally 10000)])
+     (let ((happiness (happy-pair? x y)))
+       (if happiness
+           (cons
+            (list (list x y) happiness)
+            accum)
+           accum)))
+ <
+ #:key last)
