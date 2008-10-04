@@ -7,34 +7,37 @@
          (planet schematics/schemeunit:3)
          mzlib/trace)
 
-(define (left-truncatable-prime? digits)
-  (or (null? digits)
-      (and (prime? (digits->number digits))
-           (left-truncatable-prime? (cdr digits)))))
-;; (trace left-truncatable-prime?)
-(check-true (left-truncatable-prime? '(3 7 9 7)))
+(define (bigger-primes n)
+  (for/fold ([winners '()])
+      ((right (list 2 3 5 7))
+       (left  (list 2 3 5 7)))
+      (let* ((short (append n (list right)))
+             (long (cons left short)))
+        (let ((winners (if (prime? (digits->number short))
+                           (cons short winners)
+                           winners)))
+          (if (prime? (digits->number long))
+              (cons long winners)
+              winners)))))
 
-(define (right-truncatable-prime? digits)
-  (or (null? digits)
-      (and (prime? (digits->number digits))
-           (right-truncatable-prime? (take digits (sub1 (length digits)))))))
-;; (trace right-truncatable-prime?)
-(check-true (right-truncatable-prime? '(3 7 9 7)))
+(define (sort-digit-lists digit-lists)
+  (sort digit-lists
+   <
+   #:key digits->number))
 
-(let loop ((trials 0)
-           (found '()))
-  (if (= (length found) 11 )
-      found
-      (let ((candidate
-             (digits
-              (nth-prime
-               ;; Add 5 to skip over 2, 3, 5, and 7
-               (+ 5 trials)))))
-        (loop (add1 trials)
-              (if (and (left-truncatable-prime?  candidate)
-
-                       (right-truncatable-prime? candidate))
-                  (begin
-                    (printf "~a!~%" candidate)
-                    (cons candidate found))
-                  found)))))
+(remove-duplicates
+ (sort
+  (append-map (lambda (seqs)
+                (map digits->number seqs))
+              (let loop ((seed '((2) (3) (5) (7)))
+                         (prev '())
+                         (accum '()))
+                (if (and (not (null? seed))
+                         (or (null? accum)
+                             (< (length prev)
+                                (length accum))))
+                    (loop (remove-duplicates (sort-digit-lists (append-map bigger-primes seed)))
+                          accum
+                          (cons seed accum))
+                    accum)))
+  <))
