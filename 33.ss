@@ -2,7 +2,7 @@
 
 (require srfi/26
          (except-in srfi/1 first second)
-         "../coordinates.ss"
+         "coordinates.ss"
          (planet "math.ss" ("soegaard" "math.plt"))
          (planet schematics/schemeunit:3))
 
