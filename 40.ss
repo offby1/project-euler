@@ -2,7 +2,6 @@
 
 (require (planet "math.ss" ("soegaard" "math.plt"))
          (planet schematics/schemeunit:3)
-         (planet "memoize.ss" ("dherman" "memoize.plt" ))
          (except-in srfi/1 first second)
          (lib "26.ss" "srfi")
          mzlib/trace)

@@ -1,10 +1,11 @@
 #lang scheme
 
-(require (planet "math.ss" ("soegaard" "math.plt"))
-         (planet schematics/schemeunit:3)
-         (planet "memoize.ss" ("dherman" "memoize.plt" ))
+(require  (planet "math.ss" ("soegaard" "math.plt"))
+;;          (planet schematics/schemeunit:3)
+;;          (planet "memoize.ss" ("dherman" "memoize.plt" ))
          (except-in srfi/1 first second)
-         (lib "26.ss" "srfi"))
+        ;;  (lib "26.ss" "srfi")
+         )
 
 (define (all-rotations seq)
   (let ([original-length (length seq)])

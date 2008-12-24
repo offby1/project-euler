@@ -4,8 +4,7 @@
          srfi/1
          "coordinates.ss"
          "divisors.ss"
-         (planet schematics/schemeunit:3)
-         (planet "memoize.ss" ("dherman" "memoize.plt" )))
+         (planet schematics/schemeunit:3))
 
 (define (sqr x)
   (* x x))
