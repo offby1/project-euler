@@ -16,7 +16,7 @@
 
       ;; This number is prime; mark its multiples as composite.
       (for ([victim (in-range (* 2 index) (vector-length sieve) index)])
-          (vector-set! sieve victim #f))))
+        (vector-set! sieve victim #f))))
 
   ;; Now only the primes in the sieve are marked #t; sum 'em up.
   (for/fold ([sum 0])
