@@ -1,5 +1,5 @@
 #lang scheme
 
-(require (planet "math.ss" ("soegaard" "math.plt")))
+(require (planet soegaard/math/math))
 
 (nth-prime 10001)
