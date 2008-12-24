@@ -11,19 +11,14 @@
   (vector-set! sieve 0 #f)
   (vector-set! sieve 1 #f)
 
-  (let check-starting-at ((checked 2))
-    (when (< checked (vector-length sieve))
-      (when (vector-ref sieve checked)
+  (for ([(is-prime? index) (in-indexed sieve)])
+    (when (vector-ref sieve index)
 
-        ;; This number is prime; mark its multiples as composite.
-        (let mark-composite ((victim (* 2 checked)))
-          (when (< victim (vector-length sieve))
-            (vector-set! sieve victim #f)
-            (mark-composite (+ victim checked)))))
+      ;; This number is prime; mark its multiples as composite.
+      (for ([victim (in-range (* 2 index) (vector-length sieve) index)])
+          (vector-set! sieve victim #f))))
 
-      (check-starting-at (add1 checked))))
-
-  ;; Now the only the primes in the sieve are marked #t; sum 'em up.
+  ;; Now only the primes in the sieve are marked #t; sum 'em up.
   (for/fold ([sum 0])
       ([(is-prime? index) (in-indexed sieve)])
       (+ sum (if is-prime? index 0))))
