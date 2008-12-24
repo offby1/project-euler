@@ -12,8 +12,7 @@
   (vector-set! sieve 1 #f)
 
   (for ([(is-prime? index) (in-indexed sieve)])
-    (when (vector-ref sieve index)
-
+    (when is-prime?
       ;; This number is prime; mark its multiples as composite.
       (for ([victim (in-range (* 2 index) (vector-length sieve) index)])
         (vector-set! sieve victim #f))))
