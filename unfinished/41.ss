@@ -6,14 +6,15 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
 
 #lang scheme
 (require lazy/force
-         "lazy-perms.ss")
+         "lazy-perms.ss"
+         (planet soegaard/math/math))
 
 (provide main)
+(define (looks-good thing)
+  (prime? thing))
 (define (main . args)
-  (let loop ((seq (perms (reverse (build-list 10 values))))
-             (result '()))
-    (if (= 10 (length result))
-        (!! result)
-        (loop  (cdr (! seq))
-               (cons (car (! seq))
-                     result)))))
+  (let loop ((seq (perms (reverse (build-list 10 values)))))
+    (let ((candidate (digits->number (!! (car (! seq))))))
+      (if (looks-good candidate)
+          candidate
+          (loop  (cdr (! seq)))))))
