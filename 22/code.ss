@@ -15,10 +15,10 @@
 (check-equal? (name->sum "COLIN") 53)
 
 (for/fold ([sum 0])
-          ([(name index) (in-indexed (sort (read-words-from
-                                            (build-path
-                                             (this-expression-source-directory)
-                                             "names.txt")) string<?))])
-  (+ sum
-     (* (add1 index)
-        (name->sum name))))
+    ([(name index) (in-indexed (sort (read-words-from
+                                      (build-path
+                                       (this-expression-source-directory)
+                                       "names.txt")) string<?))])
+    (+ sum
+       (* (add1 index)
+          (name->sum name))))
