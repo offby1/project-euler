@@ -1,7 +1,7 @@
 #! /bin/sh
 #| Hey Emacs, this is -*-scheme-*- code!
 #$Id: v4-script-template.ss 6058 2009-05-17 23:00:11Z erich $
-exec  mzscheme --require "$0" --main -- ${1+"$@"}
+exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
 |#
 
 #lang scheme
@@ -44,23 +44,25 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
               abs)))
 
     (define *sums-of-two-abundant-numbers*
-      (remove-duplicates
-       (sort
-        (for*/fold ([sums '()])
-            ([a (in-list *lotsa-abundant-numbers*)]
-             [b (in-list (filter [cut <= <> a] *lotsa-abundant-numbers*))])
-            (cons (+ a b) sums))
-        <)))
+      (for*/fold ([sums (make-immutable-hash '())])
+          ([a (in-list *lotsa-abundant-numbers*)]
+           [b (in-list (filter [cut <= <> a] *lotsa-abundant-numbers*))])
+          (hash-set sums (+ a b) #t)))
+
+    (define *largest-sum*
+      (for/fold ([m 0])
+          ([sum (in-hash-keys *sums-of-two-abundant-numbers*)])
+          (max sum m)))
 
     (define *not-sums*
       (for/fold ([them '()])
-          ([candidate (in-range (last *sums-of-two-abundant-numbers*))])
-          (if (member candidate *sums-of-two-abundant-numbers*)
+          ([candidate (in-range *largest-sum*)])
+          (if (hash-ref *sums-of-two-abundant-numbers* candidate #f)
               them
               (cons candidate them))))
 
     (printf "There are ~a abundant numbers of interest~%" (length *lotsa-abundant-numbers*))
-    (printf "That list of sums is ~a long~%" (length *sums-of-two-abundant-numbers*))
+    (printf "That list of sums is ~a long~%" (dict-count *sums-of-two-abundant-numbers*))
     (printf "That list of not-sums is ~a long~%" (length *not-sums*))
     (printf "And the final answer is: ~a~%" (apply + *not-sums*))
     )
