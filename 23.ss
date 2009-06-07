@@ -10,7 +10,9 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
          schemeunit/text-ui)
 
 (define (sum-of-divisors n)
-  (apply + (cdr (reverse (divisors n)))))
+  ;; Soegaard's "divisors" always includes 1..n inclusive, but we
+  ;; don't want to include N.
+  (- (apply + (divisors n)) n))
 
 (define (classify n)
   (let ((s (sum-of-divisors n)))
