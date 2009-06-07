@@ -6,8 +6,8 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
 
 #lang scheme
 (require (planet soegaard/math/math)
-         (planet schematics/schemeunit:3)
-         (planet schematics/schemeunit:3/text-ui))
+         schemeunit
+         schemeunit/text-ui)
 
 (define (sum-of-divisors n)
   (apply + (cdr (reverse (divisors n)))))
