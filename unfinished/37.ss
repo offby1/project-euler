@@ -47,9 +47,22 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
   (check-false (eligible? 2))
   (check-false (eligible? 3))
   (check-false (eligible? 5))
-  (check-false (eligible? 7))
-  )
+  (check-false (eligible? 7)))
+
+(run-tests hmm-tests 'verbose)
 
 (define (main . args)
-  (exit (run-tests hmm-tests 'verbose)))
+  (let loop ([truncatable-primes '()]
+             [length 0]
+             [candidate (next-prime 0)])
+    (if (< length 11)
+        (if (eligible? candidate)
+            (loop (cons candidate truncatable-primes)
+                  (add1 length)
+                  (next-prime candidate))
+            (loop truncatable-primes
+                  length
+                  (next-prime candidate)))
+        (apply + truncatable-primes))))
+
 (provide main)
