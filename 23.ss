@@ -38,7 +38,10 @@ exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
   (let ()
     (define *lotsa-abundant-numbers*
       (for/fold ([abs '()])
-          ([candidate (in-range (add1 28123))])
+          ([candidate (in-range 1 (add1
+                                   ;; 20
+                                   28123
+                                   ))])
           (if (equal? 'abundant (classify candidate))
               (cons candidate abs)
               abs)))
@@ -61,9 +64,15 @@ exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
               them
               (cons candidate them))))
 
-    (printf "There are ~a abundant numbers of interest~%" (length *lotsa-abundant-numbers*))
-    (printf "That list of sums is ~a long~%" (dict-count *sums-of-two-abundant-numbers*))
-    (printf "That list of not-sums is ~a long~%" (length *not-sums*))
+    (if (< (length *lotsa-abundant-numbers*) 100)
+        (begin
+          (printf "The abundant numbers of interest: ~a~%" *lotsa-abundant-numbers*)
+          (printf "The list of sums: ~a~%" *sums-of-two-abundant-numbers*)
+          (printf "The list of not-sums ~a:~%" *not-sums*))
+        (begin
+          (printf "There are ~a abundant numbers of interest~%" (length *lotsa-abundant-numbers*))
+          (printf "The list of sums has ~a entrie~%" (dict-count *sums-of-two-abundant-numbers*))
+          (printf "The list of not-sums has ~a entries:~%" (length *not-sums*))))
     (printf "And the final answer is: ~a~%" (apply + *not-sums*))
     )
   )
