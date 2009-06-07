@@ -39,8 +39,8 @@ exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
     (define *lotsa-abundant-numbers*
       (time(for/fold ([abs '()])
           ([candidate (in-range 1 (add1
-                                   ;; 200
-                                   28123
+                                   200
+                                   ;; 28123
                                    ))])
           (if (equal? 'abundant (classify candidate))
               (cons candidate abs)
@@ -53,10 +53,9 @@ exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
           (hash-set sums (+ a b) #t))))
 
     (define *largest-sum*
-      (time (* 2
-               (for*/fold ([m 0])
-                   ([a (in-hash-keys *sums-of-two-abundant-numbers*)])
-                   (max a m)))))
+      (time (for*/fold ([m 0])
+                ([a (in-hash-keys *sums-of-two-abundant-numbers*)])
+                (max a m))))
 
     (define *not-sums*
       (time(for/fold ([them '()])
