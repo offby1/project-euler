@@ -1,58 +1,46 @@
+#! /bin/sh
+#| Hey Emacs, this is -*-scheme-*- code!
+#$Id: v4-script-template.ss 6058 2009-05-17 23:00:11Z erich $
+exec  mzscheme --require "$0" --main -- ${1+"$@"}
+|#
+
 #lang scheme
+(require schemeunit
+         schemeunit/text-ui
+         (planet soegaard/math/math))
 
-(require srfi/1
-         srfi/26
-         (except-in srfi/1 first second)
-         "../coordinates.ss"
-         (except-in (planet "math.ss" ("soegaard" "math.plt")) first
-                                                               second)
-         (planet schematics/schemeunit:3)
-         mzlib/trace)
+(define log10
+  (let ((log-of-10 (log 10)))
+    (lambda (x)
+      (/ (log x) log-of-10))))
 
-(define (bigger-primes n [left? #t])
-  (let ((n (digits n)))
-    (for/fold ([winners '()])
-        ((more (list 2 3 5 7)))
-        (let ((longer (if left? (cons more n) (append n (list more)))))
-          (if (every (compose prime? digits->number) ((if left? all-cars all-cdrs) longer))
-              (cons (digits->number longer) winners)
-              winners)))))
+(define (num-digits n)
+  (inexact->exact (floor (add1 (log10 n)))))
 
-(define more-internal
-  (match-lambda
-   [(list ns ...)
-    (append-map more-internal ns)]
-   [n
-    (append (bigger-primes n #t)
-              (bigger-primes n #f))]))
+(define (sans-first-digit n)
+  (remainder n (expt 10 (sub1 (num-digits n)))))
 
-(define more
-  (lambda args
-    (remove-duplicates
-     (sort
-      (apply more-internal args)
-      <))))
+(define (sans-last-digit n)
+  (quotient n 10))
 
-(define (maybe-grow-list l)
-  (let ((new (remove-duplicates (sort (append-map more l)
-                                      < ))))
-    (and (not (null? new))
-         (remove-duplicates (sort (append l new) <)))))
+(define (left-truncatable? n)
+  (or (zero? n)
+      (and (prime? n)
+           (left-truncatable? (sans-first-digit n)))))
 
-(define (all-cdrs seq)
-  (let loop ((seq seq)
-             (accum '()))
-    (if (null? seq)
-        (reverse accum)
-        (loop (cdr seq)
-              (cons seq accum)))))
+(define (right-truncatable? n)
+  (or (zero? n)
+      (and (prime? n)
+           (right-truncatable? (sans-last-digit n)))))
 
-(define (all-cars seq)
-  (let loop ((seq seq)
-             (accum '()))
-    (if (null? seq)
-        accum
-        (loop (drop-right seq 1)
-              (cons seq accum)))))
-(printf "~a~%" (more 1))
-(printf "~a~%" (more (more 1)))
+(define (truncatable? n)
+  (and (left-truncatable? n)
+       (right-truncatable? n)))
+
+(define-test-suite hmm-tests
+
+  (check-true (truncatable? 3797)))
+
+(define (main . args)
+  (exit (run-tests hmm-tests 'verbose)))
+(provide main)
