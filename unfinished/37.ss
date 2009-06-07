@@ -37,9 +37,18 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
   (and (left-truncatable? n)
        (right-truncatable? n)))
 
+(define (eligible? n)
+  (and (< 7 n)
+       (truncatable? n)))
+
 (define-test-suite hmm-tests
 
-  (check-true (truncatable? 3797)))
+  (check-true  (eligible? 3797))
+  (check-false (eligible? 2))
+  (check-false (eligible? 3))
+  (check-false (eligible? 5))
+  (check-false (eligible? 7))
+  )
 
 (define (main . args)
   (exit (run-tests hmm-tests 'verbose)))
