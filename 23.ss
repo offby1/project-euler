@@ -74,8 +74,8 @@ exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
           (printf "The list of not-sums ~a:~%" *not-sums*))
         (begin
           (printf "There are ~a abundant numbers of interest~%" (length *lotsa-abundant-numbers*))
-          (printf "The list of sums has ~a entrie~%" (dict-count *sums-of-two-abundant-numbers*))
-          (printf "The list of not-sums has ~a entries:~%" (length *not-sums*))))
+          (printf "The list of sums has ~a entries~%" (dict-count *sums-of-two-abundant-numbers*))
+          (printf "The list of not-sums has ~a entries~%" (length *not-sums*))))
     (printf "And the final answer is: ~a~%" (apply + *not-sums*))
     )
   )
