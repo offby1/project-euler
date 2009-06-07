@@ -25,25 +25,44 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
      (else
       'abundant))))
 
-(define *lotsa-abundant-numbers*
-  (for/fold ([abs '()])
-      ([candidate (in-range (add1 28123))])
-      (if (equal? 'abundant (classify candidate))
-          (cons candidate abs)
-          abs)))
-
-(define *sums-of-two-abundant-numbers*
-  (for*/fold ([sums '()])
-      ([a (in-list *lotsa-abundant-numbers*)]
-       [b (in-list (filter [cut <= <> a] *lotsa-abundant-numbers*))])
-      (cons (+ a b) sums)))
-
 (define-test-suite hmm-tests
-
   (check-equal? 'perfect (classify 28)))
 
+(define (exit-if-non-zero n)
+  (when (not (zero? n))
+    (exit n)))
+
 (define (main . args)
-  (printf "There are ~a abundant numbers of interest~%" (length *lotsa-abundant-numbers*))
-  (printf "That list of sums is ~a long~%" (length *sums-of-two-abundant-numbers*))
-  (exit (run-tests hmm-tests 'verbose)))
+  (exit-if-non-zero (run-tests hmm-tests 'verbose))
+
+  (let ()
+    (define *lotsa-abundant-numbers*
+      (for/fold ([abs '()])
+          ([candidate (in-range (add1 28123))])
+          (if (equal? 'abundant (classify candidate))
+              (cons candidate abs)
+              abs)))
+
+    (define *sums-of-two-abundant-numbers*
+      (remove-duplicates
+       (sort
+        (for*/fold ([sums '()])
+            ([a (in-list *lotsa-abundant-numbers*)]
+             [b (in-list (filter [cut <= <> a] *lotsa-abundant-numbers*))])
+            (cons (+ a b) sums))
+        <)))
+
+    (define *not-sums*
+      (for/fold ([them '()])
+          ([candidate (in-range (last *sums-of-two-abundant-numbers*))])
+          (if (member candidate *sums-of-two-abundant-numbers*)
+              them
+              (cons candidate them))))
+
+    (printf "There are ~a abundant numbers of interest~%" (length *lotsa-abundant-numbers*))
+    (printf "That list of sums is ~a long~%" (length *sums-of-two-abundant-numbers*))
+    (printf "That list of not-sums is ~a long~%" (length *not-sums*))
+    (printf "And the final answer is: ~a~%" (apply + *not-sums*))
+    )
+  )
 (provide main)
