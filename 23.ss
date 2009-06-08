@@ -32,50 +32,60 @@ exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
   (when (not (zero? n))
     (exit n)))
 
+(define (dict-first d)
+  (dict-iterate-next d (dict-iterate-first d)))
+
+(define (max-key dict)
+  (for/fold ([m (dict-first dict)])
+      ([elt (in-dict-keys dict)])
+      (max m elt)))
+
 (define (main . args)
   (exit-if-non-zero (run-tests hmm-tests 'verbose))
 
   (let ()
     (define *lotsa-abundant-numbers*
       (time(for/fold ([abs '()])
-          ([candidate (in-range 1 (add1
-                                   200
-                                   ;; 28123
-                                   ))])
+          ([candidate (in-range 1
+                                30000   ; just a guess; apparently
+                                        ; it's large enough
+                                )])
           (if (equal? 'abundant (classify candidate))
               (cons candidate abs)
               abs))))
 
-    (define *sums-of-two-abundant-numbers*
-      (time(for*/fold ([sums (make-immutable-hash '())])
-          ([a (in-list *lotsa-abundant-numbers*)]
-           [b (in-list (filter [cut <= <> a] *lotsa-abundant-numbers*))])
-          (hash-set sums (+ a b) #t))))
+    (define *not-sums-of-two-abundant-numbers*
+      (time
+       (let ([zeroes
+              (for*/fold ([not-sums (make-immutable-hash '())])
+                  ([a (in-list *lotsa-abundant-numbers*)]
+                   [b (in-list (filter [cut <= <> a] *lotsa-abundant-numbers*))])
+                  (hash-set not-sums (+ a b) 0))])
+         (for/fold ([final zeroes])
+             ([candidate (in-range (add1 (max-key zeroes)))])
+             (if (hash-has-key? final candidate)
+                 (hash-remove final candidate)
+                 (hash-set final candidate 1))
+             ))))
 
-    (define *largest-sum*
-      (time (for*/fold ([m 0])
-                ([a (in-hash-keys *sums-of-two-abundant-numbers*)])
-                (max a m))))
-
-    (define *not-sums*
-      (time(for/fold ([them '()])
-          ([candidate (in-range *largest-sum*)])
-          (if (hash-ref *sums-of-two-abundant-numbers* candidate #f)
-              them
-              (cons candidate them)))))
-
-    (printf "The largest sum of two interesting abundant numbers: ~a~%" *largest-sum*)
-
-    (if (< (length *lotsa-abundant-numbers*) 100)
+    (if (< (hash-count *not-sums-of-two-abundant-numbers*) 100)
         (begin
           (printf "The abundant numbers of interest: ~a~%" *lotsa-abundant-numbers*)
-          (printf "The list of sums: ~a~%" *sums-of-two-abundant-numbers*)
-          (printf "The list of not-sums ~a:~%" *not-sums*))
+          (printf
+           "The set of not-sums: ~a~%"
+           (for/fold ([filtered '()])
+               (((k v)
+                 (in-hash *not-sums-of-two-abundant-numbers*)))
+               (if (zero? v)
+                   filtered
+                   (cons k filtered )))))
         (begin
           (printf "There are ~a abundant numbers of interest~%" (length *lotsa-abundant-numbers*))
-          (printf "The list of sums has ~a entries~%" (dict-count *sums-of-two-abundant-numbers*))
-          (printf "The list of not-sums has ~a entries~%" (length *not-sums*))))
-    (printf "And the final answer is: ~a~%" (apply + *not-sums*))
-    )
-  )
+          (printf "The set of not-sums has ~a entries~%" (hash-count *not-sums-of-two-abundant-numbers*))))
+    (printf
+     "And the final answer is: ~a~%"
+     (for/fold ([sum 0])
+         ([candidate (in-range (add1 28123))])
+         (+ sum (* candidate (hash-ref *not-sums-of-two-abundant-numbers* candidate 0)))))))
+
 (provide main)
