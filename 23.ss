@@ -51,20 +51,25 @@ exec  mzscheme -l errortrace --require "$0"  -- ${1+"$@"}
         (take *lotsa-abundant-numbers* 3)
         (take-right *lotsa-abundant-numbers* 3))
 
-(define *possible* (make-hash))
+(define *not-sums* (make-hash))
 
 (time
- (for ([a (in-list *lotsa-abundant-numbers*)])
-   (let/ec break
-     (for ([b (in-list *lotsa-abundant-numbers*)])
-       (if (< (+ a b) *N*)
-           (hash-set! *possible* (+ a b) #t)
-           (break))))))
+ (for* ([a (in-list *lotsa-abundant-numbers*)]
+        [b (in-list *lotsa-abundant-numbers*)])
+   (when (< (+ a b) *N*)
+     (hash-set! *not-sums* (+ a b) #t))))
 
-(printf
- "And the final answer is: ~a~%"
- (for/fold ([sum 0])
-     ([p (in-range *N*)])
-     (if (hash-ref *possible* p #f)
-         sum
-         (+ sum p))))
+(define *correct* 4159710)
+(define *computed* (for/fold ([sum 0])
+                       ([p (in-range *N*)])
+                       (if (hash-ref *not-sums* p #f)
+                           sum
+                           (+ sum p))))
+
+(printf "And the final answer is: ~a~%" *computed*)
+(when (equal? *computed* *correct*)
+  (printf "Oh goody.~%")
+  (exit 0))
+
+(printf "Oh crap.~%")
+(exit 1)
