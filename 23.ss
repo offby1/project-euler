@@ -34,15 +34,14 @@ exec  mzscheme -l errortrace --require "$0"  -- ${1+"$@"}
 
 (define *lotsa-abundant-numbers*
   (time
-   (reverse
-    (for/fold ([abs '()])
-        ([candidate (in-range 1
-                              *N*       ; just a guess; apparently
+   (for/fold ([abs '()])
+       ([candidate (in-range 1
+                             *N*        ; just a guess; apparently
                                         ; it's large enough
-                              )])
-        (if (equal? 'abundant (classify candidate))
-            (cons candidate abs)
-            abs)))))
+                             )])
+       (if (equal? 'abundant (classify candidate))
+           (cons candidate abs)
+           abs))))
 
 (printf "I found ~a abundant numbers less than ~a~%"
         (length *lotsa-abundant-numbers*)
