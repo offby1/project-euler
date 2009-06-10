@@ -1,11 +1,12 @@
 #! /bin/sh
 #| Hey Emacs, this is -*-scheme-*- code!
 #$Id: v4-script-template.ss 6058 2009-05-17 23:00:11Z erich $
-exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
+exec  mzscheme -l errortrace --require "$0"  -- ${1+"$@"}
 |#
 
 #lang scheme
 (require (planet soegaard/math/math)
+         (prefix-in set: (planet soegaard/galore:4:1/set))
          schemeunit
          schemeunit/text-ui
          srfi/26)
@@ -25,67 +26,45 @@ exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
      (else
       'abundant))))
 
-(define-test-suite hmm-tests
-  (check-equal? 'perfect (classify 28)))
+;; Everything below this point was more or less directly stolen from
+;; "Hooked"'s Python solution of 28 Mar 2007 07:53 am as found on
+;; http://projecteuler.net/index.php?section=forum&id=23&page=2
 
-(define (exit-if-non-zero n)
-  (when (not (zero? n))
-    (exit n)))
+(define *N* 20161)
 
-(define (dict-first d)
-  (dict-iterate-next d (dict-iterate-first d)))
-
-(define (max-key dict)
-  (for/fold ([m (dict-first dict)])
-      ([elt (in-dict-keys dict)])
-      (max m elt)))
-
-(define (main . args)
-  (exit-if-non-zero (run-tests hmm-tests 'verbose))
-
-  (let ()
-    (define *lotsa-abundant-numbers*
-      (time(for/fold ([abs '()])
-          ([candidate (in-range 1
-                                30000   ; just a guess; apparently
+(define *lotsa-abundant-numbers*
+  (time
+   (reverse
+    (for/fold ([abs '()])
+        ([candidate (in-range 1
+                              *N*       ; just a guess; apparently
                                         ; it's large enough
-                                )])
-          (if (equal? 'abundant (classify candidate))
-              (cons candidate abs)
-              abs))))
+                              )])
+        (if (equal? 'abundant (classify candidate))
+            (cons candidate abs)
+            abs)))))
 
-    (define *not-sums-of-two-abundant-numbers*
-      (time
-       (let ([zeroes
-              (for*/fold ([not-sums (make-immutable-hash '())])
-                  ([a (in-list *lotsa-abundant-numbers*)]
-                   [b (in-list (filter [cut <= <> a] *lotsa-abundant-numbers*))])
-                  (hash-set not-sums (+ a b) 0))])
-         (for/fold ([final zeroes])
-             ([candidate (in-range (add1 (max-key zeroes)))])
-             (if (hash-has-key? final candidate)
-                 (hash-remove final candidate)
-                 (hash-set final candidate 1))
-             ))))
+(printf "I found ~a abundant numbers less than ~a~%"
+        (length *lotsa-abundant-numbers*)
+        *N*)
+(printf "~a ... ~a~%"
+        (take *lotsa-abundant-numbers* 3)
+        (take-right *lotsa-abundant-numbers* 3))
 
-    (if (< (hash-count *not-sums-of-two-abundant-numbers*) 100)
-        (begin
-          (printf "The abundant numbers of interest: ~a~%" *lotsa-abundant-numbers*)
-          (printf
-           "The set of not-sums: ~a~%"
-           (for/fold ([filtered '()])
-               (((k v)
-                 (in-hash *not-sums-of-two-abundant-numbers*)))
-               (if (zero? v)
-                   filtered
-                   (cons k filtered )))))
-        (begin
-          (printf "There are ~a abundant numbers of interest~%" (length *lotsa-abundant-numbers*))
-          (printf "The set of not-sums has ~a entries~%" (hash-count *not-sums-of-two-abundant-numbers*))))
-    (printf
-     "And the final answer is: ~a~%"
-     (for/fold ([sum 0])
-         ([candidate (in-range (add1 28123))])
-         (+ sum (* candidate (hash-ref *not-sums-of-two-abundant-numbers* candidate 0)))))))
+(define *possible* (make-hash))
 
-(provide main)
+(time
+ (for ([a (in-list *lotsa-abundant-numbers*)])
+   (let/ec break
+     (for ([b (in-list *lotsa-abundant-numbers*)])
+       (if (< (+ a b) *N*)
+           (hash-set! *possible* (+ a b) #t)
+           (break))))))
+
+(printf
+ "And the final answer is: ~a~%"
+ (for/fold ([sum 0])
+     ([p (in-range *N*)])
+     (if (hash-ref *possible* p #f)
+         sum
+         (+ sum p))))
