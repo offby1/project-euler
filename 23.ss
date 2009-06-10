@@ -59,11 +59,11 @@ exec  mzscheme -l errortrace --require "$0"  -- ${1+"$@"}
      (hash-set! *not-sums* (+ a b) #t))))
 
 (define *correct* 4159710)
-(define *computed* (for/fold ([sum 0])
-                       ([p (in-range *N*)])
-                       (if (hash-ref *not-sums* p #f)
-                           sum
-                           (+ sum p))))
+(define *computed*
+  (time
+   (for/fold ([sum (/ (* (sub1 *N*) *N*) 2)])
+       ([p (in-hash-keys *not-sums*)])
+       (- sum p))))
 
 (printf "And the final answer is: ~a~%" *computed*)
 (when (equal? *computed* *correct*)
