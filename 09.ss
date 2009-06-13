@@ -1,19 +1,20 @@
 #lang scheme
 
-(require "coordinates.ss"
-         (lib "26.ss" "srfi"))
+(require schemeunit
+         srfi/26)
 
-(map
- (cut apply * <>)
- (for/fold ([triples '()])
-     ([(a b) (in-coordinates-diagonally 1000)])
-   (if (and (positive? a)
-            (positive? b))
-       (let ((c (sqrt (+ (* a a)
-                         (* b b)))))
-         (if (and (integer? c)
-                  (= 1000 (+ a b c)))
-             (cons (list a b c)
-                   triples)
-             triples))
-       triples)))
+(define *the-triple*
+  (let/ec return
+    (for* ([a (in-range 1 1000)]
+           [b (in-range 1 a)])
+          (let ((c (sqrt (+ (* a a)
+                            (* b b)))))
+            (when (and (integer? c)
+                       (= 1000 (+ a b c)))
+              (return (list a b c)))))))
+
+(define *the-answer* (apply * *the-triple*))
+(check-equal? *the-answer* 31875000)
+
+(display *the-answer*)
+(newline)
