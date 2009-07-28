@@ -1,10 +1,7 @@
 #lang scheme
 
-(require srfi/26
-         (except-in srfi/1 first second)
-         "coordinates.ss"
-         (planet "math.ss" ("soegaard" "math.plt"))
-         (planet schematics/schemeunit:3))
+(require (only-in srfi/1 lset-intersection lset-difference)
+         (planet "math.ss" ("soegaard" "math.plt")))
 
 (apply
  *
