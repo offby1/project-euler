@@ -1,6 +1,6 @@
 #lang scheme
 
-(require schemeunit
+(require (planet schematics/schemeunit:3)
          srfi/26)
 
 (define *the-triple*

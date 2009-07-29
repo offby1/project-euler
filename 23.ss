@@ -7,8 +7,8 @@ exec  mzscheme -l errortrace --require "$0"  -- ${1+"$@"}
 #lang scheme
 (require (planet soegaard/math/math)
          (prefix-in set: (planet soegaard/galore:4:1/set))
-         schemeunit
-         schemeunit/text-ui
+         (planet schematics/schemeunit:3)
+         (planet schematics/schemeunit:3/text-ui)
          srfi/26)
 
 (define (sum-of-divisors n)

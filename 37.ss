@@ -5,8 +5,8 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
 |#
 
 #lang scheme
-(require schemeunit
-         schemeunit/text-ui
+(require (planet schematics/schemeunit:3)
+         (planet schematics/schemeunit:3/text-ui)
          (planet soegaard/math/math))
 
 (define log10
