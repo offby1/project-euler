@@ -6,8 +6,7 @@
      (values second
              (lambda (current)
                (list (second current)
-                     (+ (first current)
-                        (second current))))
+                     (apply + current)))
              '(0 1)
              (lambda (current)
                (< (second current) *max*))
