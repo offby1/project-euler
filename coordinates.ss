@@ -11,51 +11,6 @@
 (define (coordinates n)
   (apply append (map row (build-list n values))))
 
-;; Returns every pair of integers less than *max*, smallest first.
-;; Won't return, e.g., both (1 2) and (2 1); instead only returns one
-;; of those two pairs (not sure which).
-(define (in-coordinates-diagonally *max*)
-  (make-do-sequence
-   (lambda ()
-     (values
-      ;; pos->element(s)
-      (lambda (seq)
-        (values (first seq)
-                (second seq)))
-
-      ;; next-pos
-      (match-lambda
-       [(list x y)
-        (cond
-         ((< 1 (- x y))
-          (list (sub1 x)
-                (add1 y)))
-         ((= 1 (- x y))
-          (list (add1 (+ x y))
-                0))
-         (else
-          (list (add1 (* 2 x))
-                0)))])
-
-      ;; initial position
-      '(0 0)
-
-      ;; not-last?  pos->bool
-      (lambda (seq)
-        (< (first seq) *max*))
-
-      ;; not-last?  element(s)->bool
-      (lambda (x y) #t)
-
-      ;; not-last? (-> pos elt ... bool)
-      (lambda (t x y) #t)))))
-
-(check-equal?
- (for/list ([(i j)  (in-coordinates-diagonally 3)])
-   (list i j))
- '((0 0) (1 0) (2 0) (1 1))
- )
-
 (define (in-array-coordinates array)
   (make-do-sequence
    (lambda ()
@@ -78,5 +33,4 @@
 
 (provide/contract
  [coordinates (-> natural-number/c (listof (list/c number? number?)))]
- [in-coordinates-diagonally (-> natural-number/c sequence?)]
  [in-array-coordinates (-> array? sequence?)])
