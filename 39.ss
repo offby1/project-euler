@@ -30,7 +30,8 @@
        (in-hash
         (for*/fold ([triples-by-perimeter (make-immutable-hash '())])
             ( ;; for each pair of integers < 1000 ...
-             [(a b) (in-coordinates-diagonally 1000)]
+             [a (in-range 1000)]
+             [b (in-range a)]
 
              ;; come up with some guesses for c
              [c (in-range (add1 (max a b)) (ceiling (* 3/2 (max a b))))])
@@ -46,4 +47,3 @@
      (if (< (length winning-triple-list) (length candidate-triples))
          candidate-triples
          winning-triple-list)))
-
