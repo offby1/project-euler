@@ -1,7 +1,6 @@
 #lang scheme
 
-(require srfi/26
-         srfi/1
+(require srfi/1
          "coordinates.ss"
          "divisors.ss"
          (planet schematics/schemeunit:3))
@@ -16,7 +15,7 @@
 (define (summarize triples)
   ;; sanity check: each triple in a list of triple should sum to the
   ;; same value.
-  (check-true (apply = (map (cut apply + <>) triples)))
+  (check-true (apply = (map ((curry apply) +) triples)))
   (printf "perimeter ~a has ~a solutions:~%"
           (apply + (first triples))
           (length triples))

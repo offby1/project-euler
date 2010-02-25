@@ -2,11 +2,10 @@
 
 (require (planet "math.ss" ("soegaard" "math.plt"))
          (planet schematics/schemeunit:3)
-         (except-in srfi/1 first second)
-         (lib "26.ss" "srfi"))
+         (except-in srfi/1 first second))
 
 (define (sum-of-nth-powers n k)
-  (apply + (map (cut expt <> n) (digits k))))
+  (apply + (map ((curryr expt) n) (digits k))))
 
 (define (all-sums n)
   (let loop ([k 2]

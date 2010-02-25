@@ -7,7 +7,7 @@
 
 (define (string->numbers s)
   (define base (sub1 (char->integer #\A)))
-  (map (cut - <> base) (map char->integer (string->list s))))
+  (map ((curryr -) base) (map char->integer (string->list s))))
 
 (define (name->sum n)
   (apply + (string->numbers n)))
