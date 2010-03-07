@@ -1,11 +1,7 @@
 #lang scheme
 
-(require  (planet "math.ss" ("soegaard" "math.plt"))
-;;          (planet schematics/schemeunit:3)
-;;          (planet "memoize.ss" ("dherman" "memoize.plt" ))
-         (except-in srfi/1 first second)
-        ;;  (lib "26.ss" "srfi")
-         )
+(require  (planet soegaard/math/math)
+          (except-in srfi/1 first second))
 
 (define (all-rotations seq)
   (let ([original-length (length seq)])
@@ -24,4 +20,5 @@
 (define (circular-prime? n)
   (every prime? (all-number-rotations n)))
 
-(length (filter circular-prime? (build-list 1000000 values)))
+(let ([result (filter circular-prime? (build-list 1000000 values))])
+  (printf "~a circular primes: ~a~%" (length result) result))
