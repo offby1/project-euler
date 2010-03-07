@@ -1,7 +1,7 @@
 #lang scheme
 
 (require  (planet soegaard/math/math)
-          (except-in srfi/1 first second))
+          (only-in srfi/1 circular-list every))
 
 (define (all-rotations seq)
   (let ([original-length (length seq)])
