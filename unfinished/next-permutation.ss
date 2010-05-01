@@ -10,8 +10,59 @@ exec  mzscheme -l errortrace --require "$0" --main -- ${1+"$@"}
 (require (planet schematics/schemeunit:3)
          (planet schematics/schemeunit:3/text-ui))
 
+;; Find the longest tail that is ordered in decreasing order.
+(define (longest-decreasing-tail seq [less? <])
+  (for/fold ([so-far '()])
+      ([item (in-list (reverse seq))])
+
+      (cond
+       ((null? so-far)
+        (cons item so-far))
+       ((less? (car so-far)
+               item)
+        (cons item so-far))
+       (else
+        so-far))))
+
+(define-test-suite longest-decreasing-tail-tests
+  (check-equal? (longest-decreasing-tail (list)) '())
+  (check-equal? (longest-decreasing-tail (list 1)) '(1))
+  (check-equal? (longest-decreasing-tail (list 1 2) )'(2))
+  (check-equal? (longest-decreasing-tail (list 2 1))  '(2 1))
+  (check-equal? (longest-decreasing-tail (list 3 2 1))  '(3 2 1))
+  (check-equal? (longest-decreasing-tail (list 2 3 1)) '(3 1))
+  )
+
+(define (smallest-larger-than num decreasing-seq [less? <])
+  (cond
+   ((null? (cdr described))
+    (first seq))
+   (else
+    (car decreasing-seq))))
+
+(define (replace seq old new)
+  seq)
 (define (next-permutation seq [less? <])
-  "dude, maybe you should write some tests")
+  (cond
+   ((or
+     (null? seq)
+     (null? (cdr seq)))
+    #f)
+   (else
+    (let ([tail (longest-decreasing-tail seq less?)])
+      (if (equal? (length tail)
+                  (length seq))
+          #f
+          (let* ([head (take (- (length seq)
+                                (length tail))
+                             seq)]
+                 [number-just-before-the-tail (last head)]
+                 [new (smallest-larger-than number-just-before-the-tail tail less?)])
+            (append (drop-right head 1)
+                    (list new)
+                    (replace tail new number-just-before-the-tail))
+            )))))
+  )
 
 (define-test-suite next-permutation-tests
 
