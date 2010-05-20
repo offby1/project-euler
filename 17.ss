@@ -1,6 +1,7 @@
 #lang scheme
 
-(require (planet "numspell.ss" ("neil" "numspell.plt")))
+(require (planet "numspell.ss" ("neil" "numspell.plt"))
+         schemeunit)
 
 (define (tweaked-number->english n)
   (let ((odds (remainder n 100)))
@@ -14,6 +15,9 @@
 
 (define (letter-count s)
   (length (filter char-alphabetic? (string->list s))))
+
+(check-equal? 23 (letter-count (tweaked-number->english 342)))
+(check-equal? 20 (letter-count (tweaked-number->english 115)))
 
 (foldl
  (lambda (string accum)
