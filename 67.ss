@@ -150,12 +150,11 @@
                       -1)])
   (for ([column (in-range 0 (add1 row))])
     (let ([c (make-coords row column)])
-      (replace! c (if (< (cell-value (right-child c))
-                         (cell-value (left-child c)))
-                      (cons (+
-                             (cell-value (lookup c))
-                             (cell-value (left-child c))) #\/)
-                      (cons (+
-                             (cell-value (lookup c))
-                             (cell-value (right-child c))) #\\))))))
+      (replace! c  (+
+                    (cell-value (lookup c))
+                    (max
+                     (cell-value (left-child c))
+                     (cell-value (right-child c))))))))
+
+
 (lookup (make-coords 0 0))
