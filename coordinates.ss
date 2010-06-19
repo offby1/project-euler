@@ -3,14 +3,6 @@
 (require srfi/25
          (planet schematics/schemeunit:3))
 
-(define (row n)
-  (map (lambda (i)
-         (list i (- n i)))
-       (build-list (round (/ (add1 n) 2)) values)))
-
-(define (coordinates n)
-  (apply append (map row (build-list n values))))
-
 (define (in-array-coordinates array)
   (make-do-sequence
    (lambda ()
@@ -32,5 +24,4 @@
              (lambda (t x y) #t)))))
 
 (provide/contract
- [coordinates (-> natural-number/c (listof (list/c number? number?)))]
  [in-array-coordinates (-> array? sequence?)])

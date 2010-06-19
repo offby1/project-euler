@@ -1,7 +1,6 @@
 #lang scheme
 
 (require srfi/1
-         "coordinates.ss"
          "divisors.ss"
          (planet schematics/schemeunit:3))
 
