@@ -5,23 +5,15 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
 |#
 
 #lang scheme
-(require (planet schematics/schemeunit:3)
-         (planet schematics/schemeunit:3/text-ui)
-         (planet soegaard/math/math))
-
-(define log10
-  (let ((log-of-10 (log 10)))
-    (lambda (x)
-      (/ (log x) log-of-10))))
-
-(define (num-digits n)
-  (inexact->exact (floor (add1 (log10 n)))))
+(require rackunit
+         (only-in (planet soegaard/math/math)
+                  digits digits->number prime? next-prime))
 
 (define (sans-first-digit n)
-  (remainder n (expt 10 (sub1 (num-digits n)))))
+  (digits->number (cdr (digits n))))
 
 (define (sans-last-digit n)
-  (quotient n 10))
+  (digits->number (drop-right (digits n) 1)))
 
 (define (left-truncatable? n)
   (or (zero? n)
@@ -41,15 +33,11 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
   (and (< 7 n)
        (truncatable? n)))
 
-(define-test-suite hmm-tests
-
-  (check-true  (eligible? 3797))
-  (check-false (eligible? 2))
-  (check-false (eligible? 3))
-  (check-false (eligible? 5))
-  (check-false (eligible? 7)))
-
-(run-tests hmm-tests 'verbose)
+(check-true  (eligible? 3797))
+(check-false (eligible? 2))
+(check-false (eligible? 3))
+(check-false (eligible? 5))
+(check-false (eligible? 7))
 
 (define (main . args)
   (let loop ([truncatable-primes '()]
