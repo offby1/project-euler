@@ -5,8 +5,8 @@ exec racket "$0"
 
 #lang scheme
 
-(require mzlib/etc
-         racket/system)
+(require (only-in mzlib/etc this-expression-source-directory)
+         (only-in racket/system system))
 
 (for ([prog
        (fold-files
