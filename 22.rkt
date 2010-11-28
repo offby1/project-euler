@@ -1,9 +1,9 @@
-#lang scheme
+#lang racket
 
 (require srfi/26
-         (planet schematics/schemeunit:3)
-         (file "../read-words.ss")
-         mzlib/etc)
+         rackunit
+         (file "read-words.ss")
+         (only-in mzlib/etc this-expression-source-directory))
 
 (define (string->numbers s)
   (define base (sub1 (char->integer #\A)))
@@ -18,7 +18,7 @@
     ([(name index) (in-indexed (sort (read-words-from
                                       (build-path
                                        (this-expression-source-directory)
-                                       "names.txt")) string<?))])
+                                       "22.txt")) string<?))])
     (+ sum
        (* (add1 index)
           (name->sum name))))
