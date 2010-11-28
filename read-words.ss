@@ -24,3 +24,8 @@
 
 (provide/contract
  [read-words-from (-> (or/c string? path?) (listof string?))])
+
+(require rackunit)
+(let ([stuff (read-words-from "42.txt")])
+  (check-equal? 1786 (length stuff))
+  (check-equal? "A" (car stuff)))
