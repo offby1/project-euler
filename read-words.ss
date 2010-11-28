@@ -8,19 +8,15 @@
 (define (read-words-from ifn)
   (call-with-input-file ifn
     (lambda (ip)
-      (let loop ([stuff '()])
-        (let ([datum (read ip)])
-          (if (eof-object? datum)
-              (map (lambda (thing)
-                     (match thing
-                       ;; The first datum we read will be a string.
-                       [(? string? thing)
-                        thing]
-                       ;; Each subsequent datum looks like (unquote
-                       ;; "FRED"), because of the leading comma.
-                       [(list unquote thing) thing]))
-                   (reverse stuff))
-              (loop (cons datum stuff))))))))
+      (map (lambda (thing)
+             (match thing
+               ;; The first datum we read will be a string.
+               [(? string? thing)
+                thing]
+               ;; Each subsequent datum looks like (unquote
+               ;; "FRED"), because of the leading comma.
+               [(list unquote thing) thing]))
+           (port->list read ip)))))
 
 (provide/contract
  [read-words-from (-> (or/c string? path?) (listof string?))])
