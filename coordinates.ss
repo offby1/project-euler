@@ -1,27 +1,32 @@
-#lang scheme
+#lang racket
 
-(require srfi/25
-         (planet schematics/schemeunit:3))
+(require srfi/25 rackunit)
 
 (define (in-array-coordinates array)
   (make-do-sequence
    (lambda ()
-     (values (lambda (seq)
-               (values (first seq)
-                       (second seq)))
-             (lambda (seq)
-               (match seq
-                 [(list x y)
-                  (if (< x (sub1 (array-end array 0)))
-                      (list (add1 x) y)
-                      (list 0 (add1 y)))]))
-             '(0 0)
-             (lambda (seq)
-               (and
-                (< (first seq) (array-end array 0))
-                (< (second seq) (array-end array 1))))
-             (lambda (x y) #t)
-             (lambda (t x y) #t)))))
+     (values
+      (lambda (seq)
+        (values (first seq)
+                (second seq)))
+      (lambda (seq)
+        (match seq
+          [(list x y)
+           (if (< x (sub1 (array-end array 0)))
+               (list (add1 x) y)
+               (list 0 (add1 y)))]))
+      '(0 0)
+      (lambda (seq)
+        (and
+         (< (first seq) (array-end array 0))
+         (< (second seq) (array-end array 1))))
+      (lambda (x y) #t)
+      (lambda (t x y) #t)))))
 
 (provide/contract
  [in-array-coordinates (-> array? sequence?)])
+
+(check-equal?
+ '((0 . 0) (1 . 0) (2 . 0) (0 . 1) (1 . 1) (2 . 1) (0 . 2) (1 . 2) (2 . 2))
+ (for/list ([(a b) (in-array-coordinates (apply array (shape 0 3 0 3) (build-list 9 values) ))])
+   (cons a b)))

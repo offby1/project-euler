@@ -4,7 +4,7 @@
 exec  mzscheme --require "$0" --main -- ${1+"$@"}
 |#
 
-#lang scheme
+#lang racket
 (require rackunit
          (only-in (planet soegaard/math/math)
                   digits digits->number prime? next-prime))
