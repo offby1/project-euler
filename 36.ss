@@ -3,6 +3,9 @@
 (require (planet "math.ss" ("soegaard" "math.plt")))
 
 (define (binary-digits n)
+  ;; rewrite of soegaard'd "digits", but with 2 instead of 10.  He
+  ;; really needs to parameterize the base, or allow me to pass it in
+  ;; as an argument.
   (define (d x)
     (if (< x 2)
         (list x)
