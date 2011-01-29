@@ -2,7 +2,7 @@
 
 (define (triples perimeter)
   (for*/fold ([trips '()])
-      ([a (in-range perimeter)]
+      ([a (in-range (add1 perimeter))]
        [b (in-range a)])
       (let ([c (- perimeter a b)])
         (if (equal? (* c c)
