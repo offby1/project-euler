@@ -1,19 +1,15 @@
-#lang scheme
+#lang racket
 
-(require (planet "aif.ss" ("schematics" "macro.plt")))
+(require srfi/13)
 
-(define (is-palindrome? n)
-  (let ((chars (string->list (number->string n))))
-    (and (equal? chars (reverse chars))
-         n)))
+(define (euler4e)
+  (for*/fold ([greatest 0]) ([first (in-range 101 1000)] [second (in-range first 1000)])
+             (define prod (* first second))
+    (if (palindromic? prod) (max greatest prod) greatest)))
 
-(first
- (sort
-  (filter is-palindrome?
-          (for*/fold ([products '()])
-                     ([i (in-range 999 99 -1)]
-                      [j (in-range 999 99 -1)])
-                     (cons (* i j ) products)))
+(define (palindromic? n)
+  (define s (number->string n))
+  (define r (string-reverse s))
+  (string=? s r))
 
-  >))
-
+(euler4e)
