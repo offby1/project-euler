@@ -8,6 +8,8 @@
       ([d digits])
       (+ d (* 10 sum))))
 
+(define products (mutable-set))
+
 (define (try-permutation digits)
   (for ([left-index (range 1 (sub1 (vector-length digits)))])
     (let-values ([(left-v rest) (vector-split-at digits left-index)])
@@ -17,13 +19,15 @@
           (define middle (digits->number middle-v))
           (define right  (digits->number  right-v))
           (define is-solution?  (= right (* left middle )))
-          (when  is-solution?
-            (printf "~a * ~a = ~a!!~%" left middle right)))
+          (when is-solution?
+            (printf "~a * ~a = ~a!!~%" left middle right)
+            (set-add! products right)))
         ))))
-
 
 (let loop ([digits (for/vector ([x(in-range 1 10)]) x)])
   (when digits
     (try-permutation digits)
     (loop (permutation-next! digits)))
   )
+
+(printf "Submit this as the answer: ~a~%" (for/sum ([p products]) p))
