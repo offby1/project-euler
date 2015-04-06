@@ -1,18 +1,38 @@
-#lang scheme
+#lang racket
 
-(require (planet "math.ss" ("soegaard" "math.plt"))
-         (planet schematics/schemeunit:3)
-         (except-in srfi/1 first second))
+(require (except-in srfi/1 first second))
+
+(define (digits n)
+  (let loop  ([n n]
+              [digits '()])
+    (if (zero? n)
+        (reverse digits)
+        (let-values (([q r] (quotient/remainder n 10)))
+          (loop q (cons r digits))))))
+
+(define (all-equal? . things)
+  (let loop ([things things])
+    (cond
+     ((null? things)
+      #t)
+     ((null? (cdr things))
+      #t)
+     (else
+      (if (not (equal? (car things)
+                       (cadr things)))
+          #f
+          (loop (cdr things)))))))
+
 
 (define (same-digits? . numbers)
-  (define (same-digits-2? n m)
-    (equal? (sort (digits n) <)
-            (sort (digits m) <)))
-  (andmap ((curry same-digits-2?) (car numbers)) (cdr numbers)))
+  (apply all-equal? (map (compose (curry apply set) digits) numbers)))
 
-(check-true  (same-digits? 12 21))
-(check-false (same-digits? 12 22))
-(check-false (same-digits? 10 1))
+(module+ test
+  (require (planet schematics/schemeunit:3))
+  (check-true  (same-digits? 12 21))
+  (check-true  (same-digits? 123 321 312))
+  (check-false (same-digits? 12 22))
+  (check-false (same-digits? 10 1)))
 
 (define (winner? x)
   (apply
