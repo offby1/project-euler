@@ -18,13 +18,52 @@ class Evaluation:
     k = 13
     a = 14
 
-    def __init__(self, *args, **kwargs):
-        self.flavor = self.high_card
-        self.comparison_key = (self.royal_flush[0], 9, 8, 7, 6, 5)
+    def __init__(self):
+        self.flavor = None
+        self.comparison_key = ()
+
+
+def rank(card):
+    first_letter = card[0]
+    if first_letter.isdigit():
+        return int(first_letter)
+    return {
+        't': 10,
+        'j': 11,
+        'q': 12,
+        'k': 13,
+        'a': 14
+        }[first_letter.lower()]
+
+
+def suit(card):
+    return card[1].lower()
+
+
+def is_flush(hand):
+    cards = hand.split()
+    suits = [suit(c) for c in cards]
+    return len(set(suits)) == 1
+
+
+def is_straight(hand):
+    cards = hand.split()
+    ranks = [rank(c) for c in cards]
+    if len(ranks) != len(cards):
+        return False
+
+    return max(ranks) - min(ranks) == len(ranks) - 1
 
 
 def evaluate_hand(hand):
-    return Evaluation()
+    e = Evaluation()
+    if is_straight(hand) and is_flush(hand):
+        cards = hand.split()
+        ranks = [rank(c) for c in cards]
+        if max(ranks) == Evaluation.a:
+            e.flavor = e.royal_flush
+
+    return e
 
 
 def test_evaluate_high_card():
