@@ -24,6 +24,9 @@ class Evaluation:
         self.flavor = None
         self.comparison_key = ()
 
+    def __repr__(self):
+        return repr(self.__dict__)
+
 
 def rank(card):
     first_letter = card[0]
@@ -82,6 +85,11 @@ def evaluate_hand(hand):
     elif is_straight(cards):
         e.flavor = e.straight
         e.comparison_key = tuple(sorted(ranks, reverse=True))
+    elif 3 in ranks_by_number_of_occurrences:
+        r = ranks_by_number_of_occurrences.pop(3)
+        rank_histogram.pop(r)
+        e.flavor = e.three_of_a_kind
+        e.comparison_key = tuple([r] + sorted(rank_histogram.keys(), reverse=True))
 
     return e
 
@@ -111,7 +119,7 @@ def test_evaluate_three_of_a_kind():
     hand = '8C TS 9C 8H 8S'
     value = evaluate_hand(hand)
     assert value.flavor == Evaluation.three_of_a_kind
-    assert value.comparison_key == (8, Evaluation.t)
+    assert value.comparison_key == (8, Evaluation.t, 9)
 
 
 def test_evaluate_straight():
