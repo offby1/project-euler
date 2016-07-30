@@ -40,14 +40,12 @@ def suit(card):
     return card[1].lower()
 
 
-def is_flush(hand):
-    cards = hand.split()
+def is_flush(cards):
     suits = [suit(c) for c in cards]
     return len(set(suits)) == 1
 
 
-def is_straight(hand):
-    cards = hand.split()
+def is_straight(cards):
     ranks = [rank(c) for c in cards]
     if len(ranks) != len(cards):
         return False
@@ -57,9 +55,10 @@ def is_straight(hand):
 
 def evaluate_hand(hand):
     e = Evaluation()
-    if is_straight(hand) and is_flush(hand):
-        cards = hand.split()
-        ranks = [rank(c) for c in cards]
+    cards = hand.split()
+    ranks = [rank(c) for c in cards]
+
+    if is_straight(cards) and is_flush(cards):
         if max(ranks) == Evaluation.a:
             e.flavor = e.royal_flush
         else:
