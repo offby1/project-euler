@@ -1,3 +1,5 @@
+import collections
+
 class Evaluation:
     # Types of poker hands, least-valuable first.
     high_card       = '0_high_card'
@@ -58,12 +60,25 @@ def evaluate_hand(hand):
     cards = hand.split()
     ranks = [rank(c) for c in cards]
 
-    if is_straight(cards) and is_flush(cards):
-        if max(ranks) == Evaluation.a:
-            e.flavor = e.royal_flush
+    if is_straight(cards):
+        if is_flush(cards):
+            if max(ranks) == Evaluation.a:
+                e.flavor = e.royal_flush
+            else:
+                e.flavor = e.straight_flush
+                e.comparison_key = max(ranks)
         else:
-            e.flavor = e.straight_flush
+            e.flavor = e.straight
             e.comparison_key = max(ranks)
+
+    rank_histogram = collections.Counter(ranks)
+    ranks_by_number_of_occurrences = {v: k for k, v in rank_histogram.items()}
+    if set(rank_histogram.values()) == set([1, 4]):
+        e.flavor = e.four_of_a_kind
+        e.comparison_key = (ranks_by_number_of_occurrences[4], ranks_by_number_of_occurrences[1])
+    elif set(rank_histogram.values()) == set([2, 3]):
+        e.flavor = e.full_house
+        e.comparison_key = (ranks_by_number_of_occurrences[3], ranks_by_number_of_occurrences[2])
 
     return e
 
@@ -114,14 +129,14 @@ def test_evaluate_full_house():
     hand = '8C 8S 8D 2C 2H'
     value = evaluate_hand(hand)
     assert value.flavor == Evaluation.full_house
-    assert value.comparison_key == (8)
+    assert value.comparison_key == (8, 2)
 
 
 def test_evaluate_four_of_a_kind():
     hand = '8C 8S 8D 8H 2H'
     value = evaluate_hand(hand)
     assert value.flavor == Evaluation.four_of_a_kind
-    assert value.comparison_key == (8)
+    assert value.comparison_key == (8, 2)
 
 
 def test_evaluate_straight_flush():
