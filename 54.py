@@ -79,6 +79,9 @@ def evaluate_hand(hand):
     elif len(set(suits)) == 1:
         e.flavor = e.flush
         e.comparison_key = tuple(sorted(ranks, reverse=True))
+    elif is_straight(cards):
+        e.flavor = e.straight
+        e.comparison_key = tuple(sorted(ranks, reverse=True))
 
     return e
 
@@ -115,7 +118,7 @@ def test_evaluate_straight():
     hand = '8C TS 9C QH JS'
     value = evaluate_hand(hand)
     assert value.flavor == Evaluation.straight
-    assert value.comparison_key == (Evaluation.q)
+    assert value.comparison_key == (Evaluation.q, Evaluation.j, Evaluation.t, 9, 8)
 
 
 def test_evaluate_flush():
