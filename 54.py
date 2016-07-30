@@ -59,26 +59,26 @@ def evaluate_hand(hand):
     e = Evaluation()
     cards = hand.split()
     ranks = [rank(c) for c in cards]
-
-    if is_straight(cards):
-        if is_flush(cards):
-            if max(ranks) == Evaluation.a:
-                e.flavor = e.royal_flush
-            else:
-                e.flavor = e.straight_flush
-                e.comparison_key = max(ranks)
-        else:
-            e.flavor = e.straight
-            e.comparison_key = max(ranks)
+    suits = [suit(c) for c in cards]
 
     rank_histogram = collections.Counter(ranks)
     ranks_by_number_of_occurrences = {v: k for k, v in rank_histogram.items()}
-    if set(rank_histogram.values()) == set([1, 4]):
+
+    if is_straight(cards) and is_flush(cards):
+        if max(ranks) == Evaluation.a:
+            e.flavor = e.royal_flush
+        else:
+            e.flavor = e.straight_flush
+            e.comparison_key = max(ranks)
+    elif set(rank_histogram.values()) == set([1, 4]):
         e.flavor = e.four_of_a_kind
         e.comparison_key = (ranks_by_number_of_occurrences[4], ranks_by_number_of_occurrences[1])
     elif set(rank_histogram.values()) == set([2, 3]):
         e.flavor = e.full_house
         e.comparison_key = (ranks_by_number_of_occurrences[3], ranks_by_number_of_occurrences[2])
+    elif len(set(suits)) == 1:
+        e.flavor = e.flush
+        e.comparison_key = tuple(sorted(ranks, reverse=True))
 
     return e
 
@@ -122,7 +122,7 @@ def test_evaluate_flush():
     hand = '8C TC 2C QC JC'
     value = evaluate_hand(hand)
     assert value.flavor == Evaluation.flush
-    assert value.comparison_key == (Evaluation.q)
+    assert value.comparison_key == (Evaluation.q, Evaluation.j, Evaluation.t, 8, 2)
 
 
 def test_evaluate_full_house():
