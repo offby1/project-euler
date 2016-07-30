@@ -64,7 +64,11 @@ def evaluate_hand(hand):
     ranks = [rank(c) for c in cards]
     suits = [suit(c) for c in cards]
 
-    rank_histogram = collections.Counter(ranks)
+    by_ranks = collections.defaultdict(set)
+    for c in cards:
+        by_ranks[rank(c)].add(suit(c))
+    rank_histogram = {k: len(v) for k, v in by_ranks.items()}
+    shape = sorted(rank_histogram.values(), reverse=True)
     ranks_by_number_of_occurrences = {v: k for k, v in rank_histogram.items()}
 
     if is_straight(cards) and is_flush(cards):
@@ -90,6 +94,19 @@ def evaluate_hand(hand):
         rank_histogram.pop(r)
         e.flavor = e.three_of_a_kind
         e.comparison_key = tuple([r] + sorted(rank_histogram.keys(), reverse=True))
+    elif shape == [2, 2, 1]:
+        ranks_of_pairs = [r for r, cards in by_ranks.items() if len(cards) == 2]
+        e.flavor = e.two_pairs
+        e.comparison_key = tuple(sorted(ranks_of_pairs, reverse=True)
+                                 + [ranks_by_number_of_occurrences[1]])
+    elif shape == [2, 1, 1, 1]:
+        r = ranks_by_number_of_occurrences.pop(2)
+        rank_histogram.pop(r)
+        e.flavor = e.one_pair
+        e.comparison_key = tuple([r] + sorted(rank_histogram.keys(), reverse=True))
+    else:
+        e.flavor = e.high_card
+        e.comparison_key = tuple(sorted(ranks, reverse=True))
 
     return e
 
