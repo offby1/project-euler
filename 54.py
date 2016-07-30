@@ -62,6 +62,9 @@ def evaluate_hand(hand):
         ranks = [rank(c) for c in cards]
         if max(ranks) == Evaluation.a:
             e.flavor = e.royal_flush
+        else:
+            e.flavor = e.straight_flush
+            e.comparison_key = max(ranks)
 
     return e
 
