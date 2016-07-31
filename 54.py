@@ -62,7 +62,7 @@ def is_flush(cards):
 
 
 def is_straight(cards):
-    ranks = [rank(c) for c in cards]
+    ranks = set([rank(c) for c in cards])
     if len(ranks) != len(cards):
         return False
 
@@ -127,6 +127,10 @@ def evaluate_hand(hand):
     return e
 
 
+def test_is_straight():
+    assert is_straight('TS 9C 8H 7D JS'.split())
+    assert not is_straight('5z 5z 9z 9z 7z'.split())
+
 def test_evaluate_high_card():
     hand = '8C TS KC 9H 4S'
     value = evaluate_hand(hand)
