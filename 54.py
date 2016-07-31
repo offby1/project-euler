@@ -30,13 +30,13 @@ class Evaluation:
         return '{}: {}'.format(self.flavor, self.ordered_for_comparison)
 
     def __eq__(self, other):
-        return self.total_rank() == other.total_rank()
+        return self.total_value() == other.total_value()
 
-    def total_rank(self):
+    def total_value(self):
         return tuple(list(self.flavor) + list(self.ordered_for_comparison))
 
     def __lt__(self, other):
-        return self.total_rank() < other.total_rank()
+        return self.total_value() < other.total_value()
 
 
 def rank(card):
