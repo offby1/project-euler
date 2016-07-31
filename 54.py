@@ -36,9 +36,7 @@ class Evaluation:
         return tuple(list(self.flavor) + list(self.ordered_for_comparison))
 
     def __lt__(self, other):
-        rv = (self.total_rank() < other.total_rank())
-        print("{} {} {}".format(self, '<' if rv else '>=', other))
-        return rv
+        return self.total_rank() < other.total_rank()
 
 
 def rank(card):
@@ -172,10 +170,10 @@ def test_evaluate_flush():
 
 
 def test_evaluate_full_house():
-    hand = '8C 8S 8D 2C 2H'
+    hand = '8C 8S 2D 2C 2H'
     value = evaluate_hand(hand)
     assert value.flavor == Evaluation.full_house
-    assert value.ordered_for_comparison == (8, 8, 8, 2, 2)
+    assert value.ordered_for_comparison == (2, 2, 2, 8, 8)
 
 
 def test_evaluate_four_of_a_kind():
