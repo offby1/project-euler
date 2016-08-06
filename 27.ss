@@ -21,17 +21,20 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
 
 (define (main . args)
 
-  (for*/fold ([best-quadratic #f]
-              [length 0])
-      ([a (in-range -1000 1000)]
-       [b (in-range -1000 1000)])
+  (define-values (best length)
+    (for*/fold ([best-quadratic #f]
+                [length 0])
+        ([a (in-range -1000 1000)]
+         [b (in-range -1000 1000)])
 
       (define (quadratic n)
         (+ (* n n)
            (* n a)
            b))
 
-    (let ((this-length (number-of-consecutive-primes quadratic)))
-      (if (< length this-length)
-          (values (list a b) this-length)
-          (values best-quadratic length)))))
+      (let ((this-length (number-of-consecutive-primes quadratic)))
+        (if (< length this-length)
+            (values (list a b) this-length)
+            (values best-quadratic length)))))
+
+  (apply * best))
