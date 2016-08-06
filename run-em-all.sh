@@ -1,6 +1,13 @@
 #!/bin/bash
 
-for f in *.ss
+for f in $(ls -1 [0-9]*.ss [0-9]*.rkt)
 do
-    printf "%s: %s\n" "$f" "$(racket "$f")"
+    echo -n "${f}: "
+    racket "${f}"
+done
+
+for f in [0-9]*.py
+do
+    echo -n "${f}: "
+    PATH=/usr/local/bin:$PATH python3 "$f"
 done
