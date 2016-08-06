@@ -1,19 +1,10 @@
-#! /bin/sh
-#| Hey Emacs, this is -*-scheme-*- code!
-#$Id: v4-script-template.ss 6058 2009-05-17 23:00:11Z erich $
-exec  mzscheme -l errortrace --require "$0"  -- ${1+"$@"}
-|#
-
 #lang scheme
-(require (planet soegaard/math/math)
-         (prefix-in set: (planet soegaard/galore:4:1/set))
-         (planet schematics/schemeunit:3)
-         (planet schematics/schemeunit:3/text-ui)
+(require math/number-theory
          srfi/26)
 
 (define (sum-of-divisors n)
-  ;; Soegaard's "divisors" always includes 1..n inclusive, but we
-  ;; don't want to include N.
+  ;; "divisors" always includes 1..n inclusive, but we don't want to
+  ;; include N.
   (- (apply + (divisors n)) n))
 
 (define (classify n)

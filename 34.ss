@@ -1,6 +1,7 @@
 #lang scheme
 
-(require (planet "math.ss" ("soegaard" "math.plt"))
+(require math/number-theory
+         "digits.ss"
          (planet schematics/schemeunit:3))
 
 (define (whatsit n)

@@ -1,5 +1,5 @@
 #lang scheme
-(require (only-in (planet soegaard/math/math) factorize)
+(require math/number-theory
          (only-in srfi/1 delete-duplicates)
          rackunit)
 

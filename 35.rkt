@@ -1,6 +1,7 @@
 #lang racket
 
-(require  (planet soegaard/math/math)
+(require  math/number-theory
+          "digits.ss"
           (only-in srfi/1 circular-list every)
           rackunit)
 
@@ -20,5 +21,5 @@
 (define (circular-prime? n)
   (every prime? (all-number-rotations n)))
 
-(let ([result (filter circular-prime? (build-list 1000000 values))])
+(let ([result (filter circular-prime? (map add1 (build-list 1000000 values)))])
   (printf "~a circular primes: ~a~%" (length result) result))

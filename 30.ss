@@ -1,6 +1,7 @@
 #lang scheme
 
-(require (planet "math.ss" ("soegaard" "math.plt"))
+(require math/number-theory
+         "digits.ss"
          (planet schematics/schemeunit:3)
          (except-in srfi/1 first second))
 
@@ -20,4 +21,4 @@
 
 (check-equal? (all-sums 4) '(1634 8208 9474))
 
-(all-sums 5)
+(apply + (all-sums 5))

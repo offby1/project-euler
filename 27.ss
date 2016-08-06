@@ -5,7 +5,7 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
 |#
 
 #lang scheme
-(require (planet soegaard/math/math))
+(require math/number-theory)
 
 (provide main)
 

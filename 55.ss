@@ -1,7 +1,15 @@
 #lang scheme
 
-(require (planet "math.ss" ("soegaard" "math.plt"))
+(require math/number-theory
+         "digits.ss"
          (planet schematics/schemeunit:3))
+
+(define (palindromic? n)
+  (= n (number-reverse n)))
+
+(define (number-reverse n)
+  (digits->number (reverse (digits n))))
+
 
 (define (lychrel? n)
   (let loop ([n n]

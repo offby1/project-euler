@@ -1,6 +1,6 @@
 #lang scheme
 
-(require (planet soegaard/math/math)
+(require math/number-theory
          rackunit
          srfi/25
          (file "read-words.ss")
@@ -19,7 +19,7 @@
 (length
  (filter
   (lambda (w)
-    (triangle? (word-value w)))
+    (triangle-number? (word-value w)))
   (read-words-from
    (build-path
     (this-expression-source-directory)

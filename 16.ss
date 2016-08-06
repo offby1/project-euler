@@ -1,5 +1,6 @@
 #lang scheme
 
-(require (planet "math.ss" ("soegaard" "math.plt")))
+(require math/number-theory
+         "digits.ss")
 
 (apply + (digits (expt 2 1000)))

@@ -1,14 +1,7 @@
 #lang racket
 
-(require (except-in srfi/1 first second))
-
-(define (digits n)
-  (let loop  ([n n]
-              [digits '()])
-    (if (zero? n)
-        (reverse digits)
-        (let-values (([q r] (quotient/remainder n 10)))
-          (loop q (cons r digits))))))
+(require (except-in srfi/1 first second)
+         "digits.ss")
 
 (define (all-equal? . things)
   (let loop ([things things])

@@ -1,7 +1,8 @@
 #lang racket
 
 (require (only-in "next-permutation.rkt" *order* all-permutations)
-         (only-in (planet soegaard/math/math) prime? digits->number))
+         math/number-theory
+         "digits.ss")
 
 ;; Start computing all permutations of the nine non-zero digits.
 (define *the-channel* (make-channel))

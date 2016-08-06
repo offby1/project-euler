@@ -1,7 +1,8 @@
 #lang scheme
 
 (require (only-in srfi/1 lset-intersection lset-difference)
-         (planet "math.ss" ("soegaard" "math.plt")))
+         math/number-theory
+         "digits.ss")
 
 (apply
  *

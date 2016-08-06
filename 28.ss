@@ -1,6 +1,6 @@
 #lang scheme
 
-(require (planet "math.ss" ("soegaard" "math.plt"))
+(require math/number-theory
          (planet schematics/schemeunit:3)
          (except-in srfi/1 first second)
          (lib "26.ss" "srfi"))

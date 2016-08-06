@@ -1,6 +1,6 @@
 #lang scheme
 
-(require (planet "math.ss" ("soegaard" "math.plt")))
+(require math/number-theory)
 
 ;; based on a hunch: the number of routes in an nxn grid is the middle
 ;; number in row 2n of Pascal's triangle

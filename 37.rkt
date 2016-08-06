@@ -1,13 +1,7 @@
-#! /bin/sh
-#| Hey Emacs, this is -*-scheme-*- code!
-#$Id: v4-script-template.ss 6058 2009-05-17 23:00:11Z erich $
-exec  mzscheme --require "$0" --main -- ${1+"$@"}
-|#
-
 #lang racket
 (require rackunit
-         (only-in (planet soegaard/math/math)
-                  digits digits->number prime? next-prime))
+         (only-in math/number-theory prime? next-prime)
+         "digits.ss")
 
 (define (sans-first-digit n)
   (digits->number (cdr (digits n))))
@@ -39,18 +33,17 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
 (check-false (eligible? 5))
 (check-false (eligible? 7))
 
-(define (main . args)
-  (let loop ([truncatable-primes '()]
-             [length 0]
-             [candidate (next-prime 0)])
-    (if (< length 11)
-        (if (eligible? candidate)
-            (loop (cons candidate truncatable-primes)
-                  (add1 length)
-                  (next-prime candidate))
-            (loop truncatable-primes
-                  length
-                  (next-prime candidate)))
-        (apply + truncatable-primes))))
+(let loop ([truncatable-primes '()]
+           [length 0]
+           [candidate (next-prime 0)])
+  (if (< length 11)
+      (if (eligible? candidate)
+          (loop (cons candidate truncatable-primes)
+                (add1 length)
+                (next-prime candidate))
+          (loop truncatable-primes
+                length
+                (next-prime candidate)))
+      (apply + truncatable-primes)))
 
-(provide main)
+

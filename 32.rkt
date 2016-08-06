@@ -1,12 +1,8 @@
 #lang racket
 ; Hey Emacs, this is -*-scheme-*- code!
 
-(require (planet wmfarr/permutations:1:2/permutations))
-
-(define (digits->number digits)
-  (for/fold ([sum 0])
-      ([d digits])
-      (+ d (* 10 sum))))
+(require (planet wmfarr/permutations:1:2/permutations)
+         "digits.ss")
 
 (define products (mutable-set))
 

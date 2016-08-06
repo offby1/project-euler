@@ -1,6 +1,7 @@
 #lang scheme
 
-(require (planet "math.ss" ("soegaard" "math.plt")))
+(require math/number-theory
+         "digits.ss")
 
 (define (binary-digits n)
   ;; rewrite of soegaard'd "digits", but with 2 instead of 10.  He
