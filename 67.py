@@ -4,7 +4,7 @@ the_triangle = []
 
 with open('67.txt') as inf:
     for line in inf:
-        numbers = map(int, line.split())
+        numbers = [int(thing) for thing in line.split()]
         the_triangle.append(numbers)
 
 for rownum, row in enumerate(the_triangle[1:]):
