@@ -1,10 +1,7 @@
-#lang scheme
+#lang racket
 
-(require (planet "math.ss" ("soegaard" "math.plt"))
-         (planet schematics/schemeunit:3)
-         (except-in srfi/1 first second)
-         (lib "26.ss" "srfi")
-         mzlib/trace)
+(require rackunit
+         "digits.ss")
 
 (define (digit-generator)
   (let ((the-channel (make-channel)))
@@ -22,6 +19,17 @@
     (for/fold ([result 0])
         ([i (in-range n)])
       (x!))))
-(check-equal? (nth-digit 12) 1)
 
-(apply * (map nth-digit '(1  10  100  1000  10000  100000  1000000)))
+(module+ test
+  (check-equal? (nth-digit 12) 1))
+
+(module+ main
+  (let* ([interesting-indices (set 0  9 99 999 9999 99999 999999)]
+         [biggest-index (apply max (set->list interesting-indices))])
+    (for/product ([(digit index) (in-indexed (in-producer (digit-generator)))])
+      #:break (> index biggest-index)
+      (if (set-member? interesting-indices index)
+          (begin
+            (printf "~a: ~a~%" index digit)
+            digit)
+          1))))

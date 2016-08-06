@@ -5,9 +5,13 @@
   (let loop  ([n n]
               [digits '()])
     (if (zero? n)
-        (reverse digits)
+        digits
         (let-values (([q r] (quotient/remainder n 10)))
           (loop q (cons r digits))))))
+
+(module+ test
+  (require rackunit)
+  (check-equal? (digits 123) (list 1 2 3)))
 
 (provide digits->number)
 (define (digits->number digits)
