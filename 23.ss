@@ -21,8 +21,7 @@
 (define (abundant? n)
   (> (sum-of-divisors n) n))
 
-(module+ main
-  (define *N*  28123)
+(define (turn-the-crank *N*)
 
   (define *lotsa-abundant-numbers*
     (sequence-filter abundant? (in-range *N*)))
@@ -44,10 +43,18 @@
   (define *not-sums*
     (set-subtract *all-them-integers* *sums*))
 
-  ;; (displayln (sort (set->list *not-sums*) <))
+  (printf "N is ~a; ~a abundant numbers less than that; ~a sums of pairs of such; ~a not-sums.~%"
+          *N*
+          (sequence-length *lotsa-abundant-numbers*)
+          (set-count *sums*)
+          (set-count *not-sums*))
+  )
 
-  ;; (define largest-not-sum (set-max *not-sums*))
-  ;; (check < largest-not-sum *N*)
+(module+ main
+  (let loop ([*N* 20])
+    (when (< *N*   28123)
+      (turn-the-crank *N*)
+      (loop (inexact->exact (round (* *N* 2.15)))))
+    )
 
-  (set-sum *not-sums*)
   )
