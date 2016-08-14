@@ -1,7 +1,6 @@
 #lang racket
 
-(require (only-in srfi/43 vector-swap! vector-reverse!)
-         rackunit)
+(require (only-in srfi/43 vector-swap! vector-reverse!))
 
 (provide *order*)
 (define *order* (make-parameter <))
@@ -52,11 +51,13 @@
            (step4! k a)
            a))))
 
-(parameterize ([*order* >])
-  (check-equal? (next-permutation #(1 2 3)) #f))
+(module+ test
+  (require rackunit)
+  (parameterize ([*order* >])
+    (check-equal? (next-permutation #(1 2 3)) #f))
 
-(parameterize ([*order* <])
-  (check-equal? (next-permutation #(1 2 3)) #(1 3 2)))
+  (parameterize ([*order* <])
+    (check-equal? (next-permutation #(1 2 3)) #(1 3 2))))
 
 (provide all-permutations)
 (define (all-permutations a sink-channel)
@@ -70,3 +71,9 @@
               "All permutations of ~a done~%" a)
      (channel-put sink-channel #f))))
 
+(module+ main
+  (define c (make-channel))
+  (all-permutations #(1 2 3 4) c)
+  (for ([thing (in-producer (thunk (channel-get c))
+                            #f)])
+    (displayln thing)))
