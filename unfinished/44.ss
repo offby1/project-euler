@@ -1,8 +1,6 @@
 #lang scheme
 
-(require (planet "memoize.ss" ("dherman" "memoize.plt" ))
-         (planet "math.ss" ("soegaard" "math.plt"))
-         "../coordinates.ss")
+(require math/number-theory)
 
 (define ticker
   (thread (lambda ()
@@ -19,12 +17,13 @@
         (thread
          (lambda ()
            (sort
-            (for/fold ([accum '()])
-                ([(x y) (in-coordinates-diagonally 100000)])
-                (let ((a (pentagonal x))
-                      (b (pentagonal y)))
-                  (if (and (pentagonal? (+ a b))
-                           (pentagonal? (abs (- a b))))
+            (for*/fold ([accum '()])
+                ([x 100000]
+                 [y x])
+                (let ((a (pentagonal-number x))
+                      (b (pentagonal-number y)))
+                  (if (and (pentagonal-number? (+ a b))
+                           (pentagonal-number? (abs (- a b))))
                       (cons
                        (list (list x y)
                              (list a b) )
