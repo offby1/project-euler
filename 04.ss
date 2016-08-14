@@ -1,6 +1,6 @@
 #lang racket
 
-(require srfi/13)
+(require (only-in srfi/13 string-reverse))
 
 (define (euler4e)
   (for*/fold ([greatest 0]) ([first (in-range 101 1000)] [second (in-range first 1000)])
