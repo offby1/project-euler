@@ -33,7 +33,7 @@ class Evaluation:
         return self.total_value() == other.total_value()
 
     def total_value(self):
-        return tuple(list(self.flavor) + list(self.ordered_for_comparison))
+        return (self.flavor, self.ordered_for_comparison)
 
     def __lt__(self, other):
         return self.total_value() < other.total_value()
