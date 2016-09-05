@@ -1,8 +1,10 @@
-import collections
-import pprint
-import string
-import operator
+from __future__ import print_function
+
 import itertools
+import string
+import sys
+
+import progressbar              # pip install progressbar2
 
 with open ('p059_cipher.txt') as inf:
     s = inf.read()
@@ -17,9 +19,13 @@ def attempt_decryption(key_triplet):
 
 
 def all_decryptions():
-    for triplet in itertools.product(string.ascii_lowercase,
-                                     string.ascii_lowercase,
-                                     string.ascii_lowercase):
+    n = len(string.ascii_lowercase)
+    bar = progressbar.ProgressBar(max_value=(n * n * n))
+
+    print("Computing all decryptions...", file=sys.stderr)
+    for triplet in bar(itertools.product(string.ascii_lowercase,
+                                         string.ascii_lowercase,
+                                         string.ascii_lowercase)):
         yield triplet, ''.join(attempt_decryption(triplet))
 
 
@@ -30,7 +36,8 @@ def count_letters(ostensible_plaintext):
 def ascii_sum(str):
     return sum(ord(c) for c in str)
 
-
+# Assume that the correct decryption is the one with the most letters
+# (as opposed to punctuation &c)
 for index, (triplet, ostensible_plaintext) in enumerate(sorted(all_decryptions(),
                                                                key=lambda p: count_letters(p[1]),
                                                                reverse=True)):
