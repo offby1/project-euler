@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import heapq
 import itertools
 import string
 import sys
@@ -38,10 +39,5 @@ def ascii_sum(str):
 
 # Assume that the correct decryption is the one with the most letters
 # (as opposed to punctuation &c)
-for index, (triplet, ostensible_plaintext) in enumerate(sorted(all_decryptions(),
-                                                               key=lambda p: count_letters(p[1]),
-                                                               reverse=True)):
+for triplet, ostensible_plaintext in heapq.nlargest(10, all_decryptions(), key=lambda p: count_letters(p[1])):
     print('{} ({}): {}'.format(triplet, ascii_sum(ostensible_plaintext), ostensible_plaintext))
-
-    if index > 9:
-        break
