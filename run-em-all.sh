@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for f in $(ls -1 [0-9]*.ss [0-9]*.rkt)
+for f in [0-9]*.ss [0-9]*.rkt
 do
     echo -n "${f}: "
     racket "${f}"
