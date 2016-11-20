@@ -1,8 +1,8 @@
 #lang racket
 ; Hey Emacs, this is -*-scheme-*- code!
 
-(require (planet wmfarr/permutations:1:2/permutations)
-         "digits.ss")
+(require "digits.ss"
+         "next-permutation.rkt")
 
 (define products (mutable-set))
 
@@ -23,7 +23,7 @@
 (let loop ([digits (for/vector ([x(in-range 1 10)]) x)])
   (when digits
     (try-permutation digits)
-    (loop (permutation-next! digits)))
+    (loop (next-permutation digits)))
   )
 
 (printf "Submit this as the answer: ~a~%" (for/sum ([p products]) p))

@@ -1,13 +1,5 @@
-#! /bin/sh
-#| Hey Emacs, this is -*-scheme-*- code!
-#$Id: v4-script-template.ss 6058 2009-05-17 23:00:11Z erich $
-exec  mzscheme --require "$0" --main -- ${1+"$@"}
-|#
-
 #lang scheme
 (require math/number-theory)
-
-(provide main)
 
 (define (prime/safe n)
   (and (positive? n)
@@ -19,7 +11,7 @@ exec  mzscheme --require "$0" --main -- ${1+"$@"}
         (loop (add1 n))
         n)))
 
-(define (main . args)
+(module+ main
 
   (define-values (best length)
     (for*/fold ([best-quadratic #f]
