@@ -88,10 +88,10 @@ def evaluate_hand(hand):
         else:
             e.flavor = e.straight_flush
         e.ordered_for_comparison = tuple(ranks_descending)
-    elif set(rank_histogram.values()) == set([1, 4]):
+    elif shape == [4, 1]:
         e.flavor = e.four_of_a_kind
         e.ordered_for_comparison = tuple([ranks_by_number_of_occurrences[4]] * 4 + [ranks_by_number_of_occurrences[1]])
-    elif set(rank_histogram.values()) == set([2, 3]):
+    elif shape == [3, 2]:
         e.flavor = e.full_house
         e.ordered_for_comparison = tuple([ranks_by_number_of_occurrences[3]] * 3
                                          + [ranks_by_number_of_occurrences[2]] * 2)
