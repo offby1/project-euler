@@ -1,6 +1,7 @@
 import collections
 import functools
 
+
 @functools.total_ordering
 class Evaluation:
     # Types of poker hands, least-valuable first.
