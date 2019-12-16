@@ -18,11 +18,9 @@ def reversibles_less_than(max):
         if reversable(n):
             yield (n)
 
+
 for index, r in enumerate(reversibles_less_than(1000)):
     print('{}: {} + {} => {}'.format(index + 1,
                                      r,
                                      reverse_(r),
                                      r + reverse_(r)))
-
-
-#print(count_reversables())
