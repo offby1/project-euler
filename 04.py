@@ -8,11 +8,16 @@ import itertools
 import operator
 
 three_digit_numbers = range(100, 1000)
-products = ((a * b, a, b) for a, b in itertools.product(three_digit_numbers, three_digit_numbers))
+products = (
+    (a * b, a, b)
+    for a, b in itertools.product(three_digit_numbers, three_digit_numbers)
+)
+
 
 def is_panindromic(n):
     n = str(n)
-    return n == ''.join(reversed(n))
+    return n == "".join(reversed(n))
+
 
 palindromic_products = (p for p in products if is_panindromic(p[0]))
 
