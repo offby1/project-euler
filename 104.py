@@ -1,3 +1,5 @@
+import math
+
 import tqdm
 
 def fiboniccis():
@@ -17,8 +19,14 @@ def last_nine_digits(number):
     return str(number)
 
 def first_nine_digits(number):
-    while number > 1_000_000_000:
-        number //= 10
+    l = math.log10(number)
+
+    if l < 9:
+        return str(number)
+    l = int(l) - 8
+
+    number //= pow(10, l)
+
     return str(number)
 
 if __name__ == "__main__":
