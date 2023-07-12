@@ -2,6 +2,7 @@ import math
 
 import tqdm
 
+
 def fiboniccis():
     first = 1
     second = 1
@@ -11,23 +12,27 @@ def fiboniccis():
         first, second = second, first + second
         yield second
 
+
 def is_pandigital(digit_string):
     return "0" not in digit_string and len(set(digit_string)) == 9
+
 
 def last_nine_digits(number):
     number = number % 1_000_000_000
     return str(number)
 
+
 def first_nine_digits(number):
-    l = math.log10(number)
+    l_ = math.log10(number)
 
-    if l < 9:
+    if l_ < 9:
         return str(number)
-    l = int(l) - 8
+    l_ = int(l_) - 8
 
-    number //= pow(10, l)
+    number //= pow(10, l_)
 
     return str(number)
+
 
 if __name__ == "__main__":
     for index, fib in tqdm.tqdm(enumerate(fiboniccis()), total=329468):
@@ -39,5 +44,5 @@ if __name__ == "__main__":
             continue
 
         if is_pandigital(first_nine_digits(fib)):
-            print(f"{index=} {fib=}")
+            print(f"{index=} {first_nine_digits(fib)}...{last_nine_digits(fib)}")
             break
