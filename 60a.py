@@ -80,8 +80,8 @@ z = zigzag_coordinates()
 def prime_pairs_zigzag():
     columns = more_itertools.seekable(primes())
     rows = more_itertools.seekable(primes())
-    coordinates = zigzag_coordinates()
-    for c in coordinates:
+
+    for c in zigzag_coordinates():
         columns.seek(c.col)
         rows.seek(c.row)
         yield (next(columns), next(rows))
@@ -92,23 +92,28 @@ def groovy_concatenable_prime_pairs():
         if p1 <= p2 and are_groovy_concatenable_prime_pair(p1, p2):
             yield frozenset([p1, p2])
 
-solution = set()
-for pp1 in groovy_concatenable_prime_pairs():
-    solution.update(pp1)
 
-    for pp2 in groovy_concatenable_prime_pairs():
-        potential_recruit = pp2 - solution
+def find_solutions_recursively(solution):
+    if len(solution) == 5:
+        return solution
+
+    print(f"{solution=}")
+    for pp in groovy_concatenable_prime_pairs():
+        potential_recruit = pp - solution
+        # print(f"{pp=} {potential_recruit=}")
         if len(potential_recruit) == 1:
             potential_recruit = next(iter(potential_recruit))
-            if the_big_test(solution.union([potential_recruit])):
-                solution.add(potential_recruit)
-                print(f"{solution=}")
-                if len(solution) == 5:
-                    print("woohoo")
-                    print(solution)
-                    raise Exception("Outta here")
-                solution.remove(potential_recruit)
+            potential_solution = solution.union([potential_recruit])
+            if the_big_test(potential_solution):
+                print(f"good: {potential_solution=}")
+                return find_solutions_recursively(potential_solution)
+            else:
+                print(f"bad: {potential_solution=}")
 
 
 def test_the_big_test():
     assert the_big_test([3, 7, 109, 673]) is True
+
+
+if __name__ == "__main__":
+    print(find_solutions_recursively(frozenset({2, 3})))
