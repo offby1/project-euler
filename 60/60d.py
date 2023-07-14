@@ -71,10 +71,10 @@ class Node:
 
 if __name__ == "__main__":
     prime_pair_graph = nx.Graph()
-    for pp in itertools.islice(groovy_concatenable_prime_pairs(), 1_000):
+    for pp in itertools.islice(groovy_concatenable_prime_pairs(), 100_000):
         prime_pair_graph.add_edge(pp.small, pp.large)
 
     print(prime_pair_graph)
     for clique in nx.find_cliques(prime_pair_graph):
-        if len(clique) >= 4:
+        if len(clique) >= 5:
             print(clique)
