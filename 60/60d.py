@@ -75,4 +75,6 @@ if __name__ == "__main__":
         prime_pair_graph.add_edge(pp.small, pp.large)
 
     print(prime_pair_graph)
-    nx.draw_networkx(prime_pair_graph)
+    for clique in nx.find_cliques(prime_pair_graph):
+        if len(clique) >= 4:
+            print(clique)
