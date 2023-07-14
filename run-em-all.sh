@@ -11,3 +11,14 @@ do
     echo -n "${f}: "
     PATH=/usr/local/bin:$PATH python3 "$f"
 done
+
+for d in */
+do
+    (
+        cd $d
+        if [ -e runme.sh ]
+        then
+            ./runme.sh
+        fi
+    )
+done

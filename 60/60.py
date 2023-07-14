@@ -75,6 +75,6 @@ if __name__ == "__main__":
         prime_pair_graph.add_edge(pp.small, pp.large)
 
     print(prime_pair_graph)
-    for clique in nx.find_cliques(prime_pair_graph):
-        if len(clique) >= 5:
-            print(clique)
+    five_cliques = [clique for clique in nx.find_cliques(prime_pair_graph) if len(clique) >= 5]
+    clique = min(five_cliques, key=sum)
+    print(f"solution: {sum(clique)} ({clique=})")
