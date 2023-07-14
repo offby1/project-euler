@@ -3,6 +3,7 @@ import dataclasses
 import itertools
 
 import more_itertools
+import networkx as nx
 import sympy
 
 from zigzag import zigzag_coordinates
@@ -69,9 +70,9 @@ class Node:
 
 
 if __name__ == "__main__":
-    prime_pairs_by_smaller = collections.defaultdict(list)
+    prime_pair_graph = nx.Graph()
     for pp in itertools.islice(groovy_concatenable_prime_pairs(), 1_000):
-        prime_pairs_by_smaller[pp.small].append(pp)
+        prime_pair_graph.add_edge(pp.small, pp.large)
 
-    import pprint
-    pprint.pprint(dict(prime_pairs_by_smaller))
+    print(prime_pair_graph)
+    nx.draw_networkx(prime_pair_graph)

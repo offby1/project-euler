@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "60"
+version = "0.1.0"
+description = ""
+authors = ["Eric Hanchrow <eric.hanchrow@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+networkx = {extras = ["default"], version = "^3.1"}
+more-itertools = "^9.1.0"
+sympy = "^1.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
