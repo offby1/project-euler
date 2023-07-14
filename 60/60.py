@@ -1,4 +1,3 @@
-import collections
 import dataclasses
 import itertools
 
@@ -59,22 +58,14 @@ def groovy_concatenable_prime_pairs():
             yield pp
 
 
-@dataclasses.dataclass
-class Node:
-    pp: PrimePair
-    successors: list['Node'] = dataclasses.field(default_factory=list)
-
-    def add_successor(self, s: PrimePair):
-        assert self.pp.large == s.small
-        self.successors.append(s)
-
-
 if __name__ == "__main__":
     prime_pair_graph = nx.Graph()
     for pp in itertools.islice(groovy_concatenable_prime_pairs(), 100_000):
         prime_pair_graph.add_edge(pp.small, pp.large)
 
     print(prime_pair_graph)
-    five_cliques = [clique for clique in nx.find_cliques(prime_pair_graph) if len(clique) >= 5]
+    five_cliques = [
+        clique for clique in nx.find_cliques(prime_pair_graph) if len(clique) >= 5
+    ]
     clique = min(five_cliques, key=sum)
     print(f"solution: {sum(clique)} ({clique=})")

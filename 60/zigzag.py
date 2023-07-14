@@ -21,8 +21,6 @@ def zigzag_coordinates():
     just_turned_around = False
 
     while True:
-        # print(f"{current=} {horiz_increment=} {vert_increment=}")
-
         if current.col == 0 and not just_turned_around:
             horiz_increment = 1
 
