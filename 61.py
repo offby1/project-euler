@@ -39,8 +39,9 @@ def overlaps(head: int, tail: int) -> bool:
     assert 1000 <= tail <= 9999
     if head == tail:
         return False
-    last_two_of_head = str(head)[-2:]
-    first_two_of_tail = str(tail)[0:2]
+    last_two_of_head = head % 100
+    first_two_of_tail = tail // 100
+
     return last_two_of_head == first_two_of_tail
 
 
