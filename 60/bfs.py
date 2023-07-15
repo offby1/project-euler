@@ -44,6 +44,7 @@ def breadth_first_search(
 
 def test_it() -> None:
     MAX_COORD = 2
+    DIMENSIONS = 2
 
     def get_neighbors(n: Any) -> Neighbors:
         def inc(x: int, delta: int) -> int:
@@ -59,20 +60,20 @@ def test_it() -> None:
         return rv
 
     def stopping_criterion(n: Any) -> bool:
-        return bool(n == [MAX_COORD, MAX_COORD])
+        return bool(n == [MAX_COORD] * DIMENSIONS)
 
     nodes_visited = []
 
     def per_datum_work(datum: Any) -> None:
-        print(f"{datum=}")
+        print(f"{datum=} sum:{sum(datum)}")
         nodes_visited.append(datum)
 
-    assert [[MAX_COORD, MAX_COORD]] == list(
+    assert [[MAX_COORD] * DIMENSIONS] == list(
         breadth_first_search(
-            starting_datum=(0, 0),
+            starting_datum=[0] * DIMENSIONS,
             get_neighbors=get_neighbors,
             per_datum_work=per_datum_work,
             stopping_criterion=stopping_criterion,
         )
     )
-    assert len(nodes_visited) == pow((MAX_COORD + 1), 2)
+    assert len(nodes_visited) == pow((MAX_COORD + 1), DIMENSIONS)
