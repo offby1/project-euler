@@ -1,3 +1,4 @@
+import itertools
 from typing import Any, Callable, Iterable
 
 Neighbors = Iterable[Any]
@@ -42,28 +43,31 @@ def breadth_first_search(
 
 
 def test_it() -> None:
+    MAX_COORD = 2
+
     def get_neighbors(n: Any) -> Neighbors:
         def inc(x: int, delta: int) -> int:
-            return min(10, x + delta)
+            return min(MAX_COORD, x + delta)
 
         rv = []
-        for offset in ((1, 0), (0, 1), (1, 1)):
-            candidate = (inc(n[0], offset[0]), inc(n[1], offset[1]))
-            if candidate != n:
+        for offset in itertools.product(range(2), repeat=len(n)):
+            candidate = list(map(inc, n, offset))
+            if candidate != list(n):
+                print(f"{candidate=} {n=}")
                 rv.append(candidate)
         # print(f"{n=} neighbors={rv}")
         return rv
 
     def stopping_criterion(n: Any) -> bool:
-        return bool(n == (10, 10))
+        return bool(n == [MAX_COORD, MAX_COORD])
 
-    nodes_visited = 0
+    nodes_visited = []
 
-    def per_datum_work(datum: int) -> None:
-        nonlocal nodes_visited
-        nodes_visited += 1
+    def per_datum_work(datum: Any) -> None:
+        print(f"{datum=}")
+        nodes_visited.append(datum)
 
-    assert [(10, 10)] == list(
+    assert [[MAX_COORD, MAX_COORD]] == list(
         breadth_first_search(
             starting_datum=(0, 0),
             get_neighbors=get_neighbors,
@@ -71,4 +75,4 @@ def test_it() -> None:
             stopping_criterion=stopping_criterion,
         )
     )
-    assert nodes_visited == 121
+    assert len(nodes_visited) == pow((MAX_COORD + 1), 2)
