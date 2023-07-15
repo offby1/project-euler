@@ -56,24 +56,33 @@ class Solution:
         return f"{self.__class__.__name__}(fdn_by_size={sorted(self.fdn_by_size.items())})"
 
 
+def overlapping_order_exists(s: set[int]):
+    for p in itertools.permutations(s):
+        c = itertools.cycle(p)
+        left = next(c)
+        for _ in range(len(s)):
+            right = next(c)
+            if not overlaps(left, right):
+                break
+            left = right
+        else:
+            return p
+    return False
+
+
 def solutions_from(s: int, top_level=True):
     for candidate in four_digit_polygonals_of_size(s):
         if s == 5:
             yield Solution(fdn_by_size={s: candidate})
         else:
             for sol in solutions_from(s + 1, top_level=False):
-                min_ = sol.fdn_by_size[min(sol.fdn_by_size)]
-                max_ = sol.fdn_by_size[max(sol.fdn_by_size)]
-
-                if not overlaps(max_, candidate):
-                    continue
-
-                if top_level and not overlaps(candidate, min_):
-                    continue
-
-                if top_level:
-                    print(f"w00t! in {sol=}, size {s} {candidate=} mates with beginning of {min_} and end of {max_}")
-                yield sol.union(s, candidate)
+                candidate_set = set(list(sol.fdn_by_size.values()) + [candidate])
+                if not top_level:
+                    yield sol.union(s, candidate)
+                else:
+                    oo = overlapping_order_exists(candidate_set)
+                    if oo:
+                        yield sol.union(s, candidate)
 
 
 def test_formula():
@@ -88,6 +97,10 @@ def test_overlaps():
     assert overlaps(1234, 3456)
     assert not overlaps(3456, 1234)
     assert not overlaps(1111, 1111)
+
+
+def test_overlapping_order_exists():
+    assert overlapping_order_exists({8128, 2882, 8281}) == (8128, 2882, 8281)
 
 
 if __name__ == "__main__":
