@@ -52,18 +52,28 @@ class Solution:
     def union(self, size: int, fdn: int):
         return Solution(fdn_by_size=dict(self.fdn_by_size | {size: fdn}))
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}(fdn_by_size={sorted(self.fdn_by_size.items())})"
 
-def solutions_from(s: int):
+
+def solutions_from(s: int, top_level=True):
     for candidate in four_digit_polygonals_of_size(s):
         if s == 5:
             yield Solution(fdn_by_size={s: candidate})
         else:
-            for sol in solutions_from(s + 1):
-                # print(f"{s=} {candidate=} {sol=}", end=" ")
-                fdn_from_larger_size = sol.fdn_by_size[s + 1]
-                # print(f"{fdn_from_larger_size=}")
-                if overlaps(candidate, fdn_from_larger_size):
-                    yield sol.union(s, candidate)
+            for sol in solutions_from(s + 1, top_level=False):
+                min_ = sol.fdn_by_size[min(sol.fdn_by_size)]
+                max_ = sol.fdn_by_size[max(sol.fdn_by_size)]
+
+                if not overlaps(max_, candidate):
+                    continue
+
+                if top_level and not overlaps(candidate, min_):
+                    continue
+
+                if top_level:
+                    print(f"w00t! in {sol=}, size {s} {candidate=} mates with beginning of {min_} and end of {max_}")
+                yield sol.union(s, candidate)
 
 
 def test_formula():
@@ -81,5 +91,5 @@ def test_overlaps():
 
 
 if __name__ == "__main__":
-    print(list(solutions_from(3)))
-    print(four_digit_polygonals_of_size.cache_info())
+    import pprint
+    pprint.pprint(list(solutions_from(3)))
