@@ -16,9 +16,6 @@ def breadth_first_search(
     def _bfs(
         *,
         queue: list[NodeType],
-        get_neighbors: Callable[[NodeType], Neighbors],
-        per_datum_work: Callable[[NodeType], None],
-        stopping_criterion: Callable[[NodeType], bool],
     ) -> Iterable[NodeType]:
         while True:
             if len(queue) == 0:
@@ -38,9 +35,6 @@ def breadth_first_search(
 
     yield from _bfs(
         queue=[starting_datum],
-        get_neighbors=get_neighbors,
-        per_datum_work=per_datum_work,
-        stopping_criterion=stopping_criterion,
     )
 
 
