@@ -9,20 +9,32 @@ def P(s: int):
     return formula
 
 
-def _triangulars():
+def polygonals_of_size(s: int):
     for n in itertools.count(1):
-        yield P(3)(n)
+        yield P(s)(n)
 
 
-def four_digit_triangulars():
-    for t in _triangulars():
+def four_digit_polygonals(s: int):
+    for t in polygonals_of_size(s):
         if len(str(t)) == 4:
             yield t
         elif len(str(t)) > 4:
             return
 
 
-t = four_digit_triangulars()
+def four_digits_starting_with(s: int, first_two_digits: int):
+    assert 10 <= first_two_digits <= 99
+    yielded = 0
+    for candidate in four_digit_polygonals(s):
+        if str(candidate).startswith(str(first_two_digits)):
+            yield candidate
+            yielded += 1
+        else:
+            if yielded:
+                return  # save time by not trying the bigger candidates
+
+
+t = four_digits_starting_with(3, 11)
 
 
 def test_formula():
