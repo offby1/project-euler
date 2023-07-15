@@ -22,7 +22,7 @@ def polygonals_of_size(s: int):
 
 
 @functools.cache
-def four_digit_polygonals(s: int):
+def four_digit_polygonals_of_size(s: int):
     rv = []
 
     for t in polygonals_of_size(s):
@@ -47,38 +47,20 @@ def overlaps(head: int, tail: int) -> bool:
 
 @dataclasses.dataclass(frozen=True)
 class Solution:
-    sizes_and_fdns: list[tuple[int, int]]
-
-    # def __post_init__(self):
-    #     assert [3 <= size <= 8 for size, _ in self.sizes_and_fdns]
-    #     assert [1000 <= fdn <= 9999 for _, fdn in self.sizes_and_fdns]
-
-    #     self.sanity_check()
+    fdn_by_size: dict[int, int] = dataclasses.field(default_factory=dict)
 
     def union(self, size: int, fdn: int):
-        assert 1000 <= fdn <= 9999
-        assert [size > s for s, _ in self.sizes_and_fdns]
-
-        return Solution(sizes_and_fdns=self.sizes_and_fdns + [(size, fdn)])
-
-    def sanity_check(self):
-        for size, fdn in self.sizes_and_fdns:
-            assert fdn in polygonals_of_size(size)
-            print(f"{self} is legit")
-
-    def fdn_by_size(self, size: int):
-        return next(itertools.dropwhile(lambda t: t[0] != size, iter(self.sizes_and_fdns)))
+        return Solution(fdn_by_size=dict(self.fdn_by_size | {size: fdn}))
 
 
 def solutions_from(s: int):
-    for candidate in four_digit_polygonals(s):
-        if s == 8:
-            yield Solution(sizes_and_fdns=[(s, candidate)])
+    for candidate in four_digit_polygonals_of_size(s):
+        if s == 5:
+            yield Solution(fdn_by_size={s: candidate})
         else:
-            assert s < 8, f"wtf {s=}"
             for sol in solutions_from(s + 1):
                 # print(f"{s=} {candidate=} {sol=}", end=" ")
-                fdn_from_larger_size = sol.fdn_by_size(s + 1)[1]
+                fdn_from_larger_size = sol.fdn_by_size[s + 1]
                 # print(f"{fdn_from_larger_size=}")
                 if overlaps(candidate, fdn_from_larger_size):
                     yield sol.union(s, candidate)
@@ -100,3 +82,4 @@ def test_overlaps():
 
 if __name__ == "__main__":
     print(list(solutions_from(3)))
+    print(four_digit_polygonals_of_size.cache_info())
