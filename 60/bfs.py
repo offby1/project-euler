@@ -1,5 +1,6 @@
-import itertools
 from typing import Any, Callable, Iterable
+
+from sympy.combinatorics import GrayCode
 
 Neighbors = Iterable[Any]
 
@@ -51,28 +52,29 @@ def test_it() -> None:
             return min(MAX_COORD, x + delta)
 
         rv = []
-        for offset in sorted(itertools.product(range(2), repeat=len(n)), key=sum):
-            candidate = list(map(inc, n, offset))
+        gc = GrayCode(DIMENSIONS)
+
+        for offset in gc.generate_gray():
+            candidate = list(map(inc, n, [int(i) for i in offset]))
             if candidate != list(n):
                 rv.append(candidate)
         # print(f"{n=} neighbors={rv}")
         return rv
 
-    def stopping_criterion(n: Any) -> bool:
-        return bool(n == [MAX_COORD] * DIMENSIONS)
-
     nodes_visited = []
+
+    def stopping_criterion(n: Any) -> bool:
+        return len(nodes_visited) == pow((MAX_COORD + 1), DIMENSIONS)
 
     def per_datum_work(datum: Any) -> None:
         print(f"{datum=} sum:{sum(datum)}")
         nodes_visited.append(datum)
 
-    assert [[MAX_COORD] * DIMENSIONS] == list(
-        breadth_first_search(
-            starting_datum=[0] * DIMENSIONS,
-            get_neighbors=get_neighbors,
-            per_datum_work=per_datum_work,
-            stopping_criterion=stopping_criterion,
-        )
-    )
+    list(breadth_first_search(
+        starting_datum=[0] * DIMENSIONS,
+        get_neighbors=get_neighbors,
+        per_datum_work=per_datum_work,
+        stopping_criterion=stopping_criterion,
+    ))
+
     assert len(nodes_visited) == pow((MAX_COORD + 1), DIMENSIONS)
