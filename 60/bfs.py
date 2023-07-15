@@ -4,23 +4,40 @@ Neighbors = Iterable[Any]
 
 
 def breadth_first_search(
-    queue: list[Any],
+    *,
+    starting_datum: Any,
     get_neighbors: Callable[[Any], Neighbors],
     stopping_criterion: Callable[[Any], bool],
 ) -> Iterable[Any]:
-    print(f"{queue=}")
+    def _bfs(
+        *,
+        queue: list[Any],
+        get_neighbors: Callable[[Any], Neighbors],
+        stopping_criterion: Callable[[Any], bool],
+    ) -> Iterable[Any]:
+        print(f"{queue=}")
 
-    datum = queue.pop(0)
+        datum = queue.pop(0)
 
-    if stopping_criterion(datum):
-        yield datum
-        return
+        if stopping_criterion(datum):
+            yield datum
+            return
 
-    for n in get_neighbors(datum):
-        if n not in queue:
-            queue.append(n)
+        for n in get_neighbors(datum):
+            if n not in queue:
+                queue.append(n)
 
-    yield from breadth_first_search(queue, get_neighbors, stopping_criterion)
+        yield from _bfs(
+            queue=queue,
+            get_neighbors=get_neighbors,
+            stopping_criterion=stopping_criterion,
+        )
+
+    yield from _bfs(
+        queue=[starting_datum],
+        get_neighbors=get_neighbors,
+        stopping_criterion=stopping_criterion,
+    )
 
 
 def test_it() -> None:
@@ -40,5 +57,9 @@ def test_it() -> None:
         return bool(n == (10, 10))
 
     assert [(10, 10)] == list(
-        breadth_first_search([(0, 0)], get_neighbors, stopping_criterion)
+        breadth_first_search(
+            starting_datum=(0, 0),
+            get_neighbors=get_neighbors,
+            stopping_criterion=stopping_criterion,
+        )
     )
