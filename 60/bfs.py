@@ -44,17 +44,16 @@ def breadth_first_search(
 
 def test_it() -> None:
     MAX_COORD = 2
-    DIMENSIONS = 2
+    DIMENSIONS = 3
 
     def get_neighbors(n: Any) -> Neighbors:
         def inc(x: int, delta: int) -> int:
             return min(MAX_COORD, x + delta)
 
         rv = []
-        for offset in itertools.product(range(2), repeat=len(n)):
+        for offset in sorted(itertools.product(range(2), repeat=len(n)), key=sum):
             candidate = list(map(inc, n, offset))
             if candidate != list(n):
-                print(f"{candidate=} {n=}")
                 rv.append(candidate)
         # print(f"{n=} neighbors={rv}")
         return rv
