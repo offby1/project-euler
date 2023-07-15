@@ -17,26 +17,21 @@ def breadth_first_search(
         per_datum_work: Callable[[Any], None],
         stopping_criterion: Callable[[Any], bool],
     ) -> Iterable[Any]:
-        print(f"{queue=}")
+        while True:
+            if len(queue) == 0:
+                break
 
-        datum = queue.pop(0)
+            datum = queue.pop(0)
 
-        per_datum_work(datum)
+            per_datum_work(datum)
 
-        if stopping_criterion(datum):
-            yield datum
-            return
+            if stopping_criterion(datum):
+                yield datum
+                break
 
-        for n in get_neighbors(datum):
-            if n not in queue:
-                queue.append(n)
-
-        yield from _bfs(
-            queue=queue,
-            get_neighbors=get_neighbors,
-            per_datum_work=per_datum_work,
-            stopping_criterion=stopping_criterion,
-        )
+            for n in get_neighbors(datum):
+                if n not in queue:
+                    queue.append(n)
 
     yield from _bfs(
         queue=[starting_datum],
