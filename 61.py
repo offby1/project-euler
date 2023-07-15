@@ -22,19 +22,27 @@ def four_digit_polygonals(s: int):
             return
 
 
-def four_digits_starting_with(s: int, first_two_digits: int):
-    assert 10 <= first_two_digits <= 99
-    yielded = 0
+def overlaps(head: int, tail: int) -> bool:
+    assert 1000 <= head <= 9999
+    assert 1000 <= tail <= 9999
+    if head == tail:
+        return False
+    return str(tail).startswith(str(head)[-2])
+
+
+def solutions_from(s: int):
     for candidate in four_digit_polygonals(s):
-        if str(candidate).startswith(str(first_two_digits)):
-            yield candidate
-            yielded += 1
-        else:
-            if yielded:
-                return  # save time by not trying the bigger candidates
+        if s == 8:
+            yield {candidate}
+            return
+        assert s < 8, f"wtf {s=}"
+        for sol in solutions_from(s + 1):
+            for number in sol:
+                if overlaps(candidate, number):
+                    yield sol.union([candidate])
 
 
-t = four_digits_starting_with(3, 11)
+s = solutions_from(3)
 
 
 def test_formula():
@@ -43,3 +51,9 @@ def test_formula():
     assert [P(3)(i) for i in one_through_five] == [1, 3, 6, 10, 15]
     assert [P(4)(i) for i in one_through_five] == [1, 4, 9, 16, 25]
     assert [P(5)(i) for i in one_through_five] == [1, 5, 12, 22, 35]
+
+
+def test_overlaps():
+    assert overlaps(1234, 3456)
+    assert not overlaps(3456, 1234)
+    assert not overlaps(1111, 1111)
