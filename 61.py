@@ -34,6 +34,7 @@ def four_digit_polygonals_of_size(s: int):
     return rv
 
 
+@functools.cache
 def overlaps(head: int, tail: int) -> bool:
     assert 1000 <= head <= 9999
     assert 1000 <= tail <= 9999
@@ -56,11 +57,14 @@ class Solution:
         return f"{self.__class__.__name__}(fdn_by_size={sorted(self.fdn_by_size.items())})"
 
 
-def overlapping_order_exists(s: set[int]):
+def overlapping_order_exists(s: set[int], top_level):
+    if len(s) < 2:
+        return s
+
     for p in itertools.permutations(s):
         c = itertools.cycle(p)
         left = next(c)
-        for _ in range(len(s)):
+        for _ in range(0, len(s) if top_level else len(s) - 1):
             right = next(c)
             if not overlaps(left, right):
                 break
@@ -70,19 +74,15 @@ def overlapping_order_exists(s: set[int]):
     return False
 
 
-def solutions_from(s: int, top_level=True):
+def solutions_from(s: int, *, top_level=True, max_size=8):
     for candidate in four_digit_polygonals_of_size(s):
-        if s == 5:
+        if s == max_size:
             yield Solution(fdn_by_size={s: candidate})
         else:
-            for sol in solutions_from(s + 1, top_level=False):
+            for sol in solutions_from(s + 1, top_level=False, max_size=max_size):
                 candidate_set = set(list(sol.fdn_by_size.values()) + [candidate])
-                if not top_level:
+                if overlapping_order_exists(candidate_set, top_level):
                     yield sol.union(s, candidate)
-                else:
-                    oo = overlapping_order_exists(candidate_set)
-                    if oo:
-                        yield sol.union(s, candidate)
 
 
 def test_formula():
@@ -100,7 +100,11 @@ def test_overlaps():
 
 
 def test_overlapping_order_exists():
-    assert overlapping_order_exists({8128, 2882, 8281}) == (8128, 2882, 8281)
+    assert overlapping_order_exists({8128, 2882, 8281}, True) == (8128, 2882, 8281)
+
+
+def test_solutions():
+    assert list(solutions_from(3, max_size=5)) == [Solution(fdn_by_size={3: 8128, 4: 8281, 5: 2882})]
 
 
 if __name__ == "__main__":
