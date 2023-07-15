@@ -66,17 +66,21 @@ class Solution:
             assert fdn in polygonals_of_size(size)
             print(f"{self} is legit")
 
+    def fdn_by_size(self, size: int):
+        return next(itertools.dropwhile(lambda t: t[0] != size, iter(self.sizes_and_fdns)))
+
 
 def solutions_from(s: int):
     for candidate in four_digit_polygonals(s):
-        # print(f"{'*' * s}: {candidate=}")
         if s == 8:
             yield Solution(sizes_and_fdns=[(s, candidate)])
-            return
-        assert s < 8, f"wtf {s=}"
-        for sol in solutions_from(s + 1):
-            for _, fdn in sol.sizes_and_fdns:
-                if overlaps(candidate, fdn):
+        else:
+            assert s < 8, f"wtf {s=}"
+            for sol in solutions_from(s + 1):
+                # print(f"{s=} {candidate=} {sol=}", end=" ")
+                fdn_from_larger_size = sol.fdn_by_size(s + 1)[1]
+                # print(f"{fdn_from_larger_size=}")
+                if overlaps(candidate, fdn_from_larger_size):
                     yield sol.union(s, candidate)
 
 
