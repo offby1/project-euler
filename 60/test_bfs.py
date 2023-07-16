@@ -1,4 +1,4 @@
-from sympy.combinatorics import GrayCode
+import itertools
 
 from bfs import Neighbors, NodeType, breadth_first_search
 
@@ -11,15 +11,10 @@ def test_it() -> None:
         def inc(x: int, delta: int) -> int:
             return min(MAX_COORD, x + delta)
 
-        rv = []
-        gc = GrayCode(DIMENSIONS)  # type: ignore
-
-        for offset in gc.generate_gray():  # type: ignore
+        for offset in sorted(itertools.product(range(2), repeat=DIMENSIONS), key=sum):
             candidate = list(map(inc, n, [int(i) for i in offset]))
             if candidate != list(n):
-                rv.append(candidate)
-        # print(f"{n=} neighbors={rv}")
-        return rv
+                yield candidate
 
     nodes_visited: list[NodeType] = []
 
