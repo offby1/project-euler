@@ -29,10 +29,9 @@ def four_digit_polygonals_of_size(s: int):
     rv = []
 
     for t in polygonals_of_size(s):
-        if len(str(t)) == 4:
-            rv.append(t)
-        elif len(str(t)) > 4:
+        if t > 9999:
             break
+        rv.append(t)
 
     return rv
 
