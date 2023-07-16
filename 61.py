@@ -1,6 +1,9 @@
+import collections
 import dataclasses
 import functools
 import itertools
+
+import networkx as nx
 
 
 # https://en.wikipedia.org/wiki/Polygonal_number#Formula
@@ -34,79 +37,28 @@ def four_digit_polygonals_of_size(s: int):
     return rv
 
 
-@functools.cache
-def overlaps(head: int, tail: int) -> bool:
-    assert 1000 <= head <= 9999
-    assert 1000 <= tail <= 9999
-    if head == tail:
-        return False
-    last_two_of_head = head % 100
-    first_two_of_tail = tail // 100
-
-    return last_two_of_head == first_two_of_tail
-
-
-@dataclasses.dataclass(frozen=True)
-class Solution:
-    fdn_by_size: dict[int, int] = dataclasses.field(default_factory=dict)
-
-    def union(self, size: int, fdn: int):
-        return Solution(fdn_by_size=dict(self.fdn_by_size | {size: fdn}))
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(fdn_by_size={sorted(self.fdn_by_size.items())})"
-
-
-def overlapping_order_exists(s: set[int], top_level):
-    if len(s) < 2:
-        return s
-
-    for p in itertools.permutations(s):
-        c = itertools.cycle(p)
-        left = next(c)
-        for _ in range(0, len(s) if top_level else len(s) - 1):
-            right = next(c)
-            if not overlaps(left, right):
-                break
-            left = right
-        else:
-            return p
-    return False
-
-
-def solutions_from(s: int, *, top_level=True, max_size=8):
-    for candidate in four_digit_polygonals_of_size(s):
-        if s == max_size:
-            yield Solution(fdn_by_size={s: candidate})
-        else:
-            for sol in solutions_from(s + 1, top_level=False, max_size=max_size):
-                candidate_set = set(list(sol.fdn_by_size.values()) + [candidate])
-                if overlapping_order_exists(candidate_set, top_level):
-                    yield sol.union(s, candidate)
-
-
-def test_formula():
-    one_through_five = range(1, 6)
-
-    assert [P(3)(i) for i in one_through_five] == [1, 3, 6, 10, 15]
-    assert [P(4)(i) for i in one_through_five] == [1, 4, 9, 16, 25]
-    assert [P(5)(i) for i in one_through_five] == [1, 5, 12, 22, 35]
-
-
-def test_overlaps():
-    assert overlaps(1234, 3456)
-    assert not overlaps(3456, 1234)
-    assert not overlaps(1111, 1111)
-
-
-def test_overlapping_order_exists():
-    assert overlapping_order_exists({8128, 2882, 8281}, True) == (8128, 2882, 8281)
-
-
-def test_solutions():
-    assert list(solutions_from(3, max_size=5)) == [Solution(fdn_by_size={3: 8128, 4: 8281, 5: 2882})]
-
-
 if __name__ == "__main__":
-    import pprint
-    pprint.pprint(list(solutions_from(3)))
+    fdns_by_size_and_first_two_digits = collections.defaultdict(lambda: collections.defaultdict(list))
+    fdns_by_size_and_last_two_digits = collections.defaultdict(lambda: collections.defaultdict(list))
+    sizes_by_fdn = collections.defaultdict(set)
+
+    for size in range(3, 9):
+        for fdn in four_digit_polygonals_of_size(size):
+            sizes_by_fdn[fdn].add(size)
+            first, last = divmod(fdn, 100)
+            fdns_by_size_and_first_two_digits[size][first].append(fdn)
+            fdns_by_size_and_last_two_digits[size][last].append(fdn)
+
+    G = nx.Graph()
+    for size, d in fdns_by_size_and_first_two_digits.items():
+        for prefix, p_numbers in d.items():
+            for p_n in p_numbers:
+                for s_n in fdns_by_size_and_last_two_digits[size][prefix]:
+                    G.add_edge(s_n, p_n)
+    for cycle in nx.simple_cycles(G, length_bound=6):
+        if len(cycle) == 6:
+            for fdn in cycle:
+                s = sizes_by_fdn[fdn]
+                descr = f"size {s.pop()}" if len(s) == 1 else f"sizes {', '.join([str(n) for n in s])}"
+                print(f"{fdn}: {descr}", end=", ")
+            print()
