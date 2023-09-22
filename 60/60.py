@@ -4,6 +4,7 @@ import itertools
 import more_itertools
 import networkx as nx
 import sympy
+import tqdm
 
 from zigzag import zigzag_coordinates
 
@@ -60,7 +61,9 @@ def groovy_concatenable_prime_pairs():
 
 if __name__ == "__main__":
     prime_pair_graph = nx.Graph()
-    for pp in itertools.islice(groovy_concatenable_prime_pairs(), 100_000):
+    for pp in tqdm.tqdm(
+        itertools.islice(groovy_concatenable_prime_pairs(), 100_000), total=100_000
+    ):
         prime_pair_graph.add_edge(pp.small, pp.large)
 
     print(prime_pair_graph)
